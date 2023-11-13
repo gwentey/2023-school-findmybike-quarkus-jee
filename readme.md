@@ -16,6 +16,31 @@ Les **gestionnaires de flotte** ajuster la taille de la flotte en ajoutant ou su
 
 ## Exigences fonctionnelles
 
+**Localisation des vélos :**
+_L'utilisateur_ DOIT pouvoir localiser le vélo électrique disponible le plus proche de leur emplacement actuel.
+
+**Réservation de vélos :**
+_L'utilisateur _DOIT avoir la possibilité de réserver un vélo électrique.
+Une fois réservé, le vélo doit être marqué comme indisponible pour d'autres utilisateurs pendant la période de réservation.
+
+**Gestion de Flotte :**
+_Les gestionnaires de flotte_ doivent pouvoir ajouter ou supprimer des vélos à leur flotte par zone en fonction des besoins utilisateurs.
+
+**Optimisation de la Charge :**
+_Les chargeurs_ doivent recevoir des informations sur les vélos nécessitant une recharge en fonction de leur niveau de batterie.
+_Les chargeurs_ sont rémunérés également en fonction de la distance du vélo récupéré par rapport à la zone disponible la plus proche. 
+La rémunération des _chargeurs_ = kilométrage + le pourcentage de batterie chargé.
+
+----
+Gestion Optimale de la Répartition :
+
+Les gestionnaires de flotte doivent pouvoir optimiser la répartition des vélos en fonction de la demande, assurant une efficacité opérationnelle maximale.
+Sécurité des Données :
+
+Le système doit garantir la sécurité des données des utilisateurs, y compris leurs informations de localisation et de réservation.
+Expérience Utilisateur Transparente :
+
+L'ensemble du processus, de la localisation du vélo à la réservation et au retour, doit être fluide et transparent pour les utilisateurs.
 
 ## Exigences non fonctionnelles
 
