@@ -32,7 +32,7 @@ _Les chargeurs_ sont rémunérés également en fonction de la distance du vélo
 La rémunération des _chargeurs_ = kilométrage + le pourcentage de batterie chargé.
 
 ----
-Gestion Optimale de la Répartition :
+**Gestion Optimale de la Répartition :**
 
 Les gestionnaires de flotte doivent pouvoir optimiser la répartition des vélos en fonction de la demande, assurant une efficacité opérationnelle maximale.
 Sécurité des Données :
