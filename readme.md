@@ -20,7 +20,7 @@ Les **gestionnaires de flotte** ajuster la taille de la flotte en ajoutant ou su
 _L'utilisateur_ DOIT pouvoir localiser le vélo électrique disponible le plus proche de leur emplacement actuel.
 
 **Réservation de vélos :**
-_L'utilisateur _DOIT avoir la possibilité de réserver un vélo électrique.
+_L'utilisateur_ DOIT avoir la possibilité de réserver un vélo électrique.
 Une fois réservé, le vélo doit être marqué comme indisponible pour d'autres utilisateurs pendant la période de réservation.
 
 **Gestion de Flotte :**
