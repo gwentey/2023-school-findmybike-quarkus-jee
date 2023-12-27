@@ -5,11 +5,11 @@ import org.locationtech.jts.geom.Point;
 
 
 @Entity
-public class Velo {
+public class Bike {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "idVelo", nullable = false)
-	private int idVelo;
+	@Column(name = "idBike", nullable = false)
+	private int idBike;
 
 	@Column(name = "position", nullable = false, columnDefinition = "POINT")
 	private Point position;
@@ -17,8 +17,11 @@ public class Velo {
 	@Column(name = "batterie", nullable = false)
 	private int batterie;
 
+	@Column(name = "managerId", nullable = false)
+	private int managerId;
+
 	public int getId() {
-		return idVelo;
+		return idBike;
 	}
 
 	public int getBatterie() {
