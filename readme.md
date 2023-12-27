@@ -31,17 +31,6 @@ _Les chargeurs_ DOIVENT recevoir des informations sur les vélos nécessitant un
 _Les chargeurs_ sont rémunérés également en fonction de la distance du vélo récupéré par rapport à la zone disponible la plus proche. 
 La rémunération des _chargeurs_ = kilométrage + le pourcentage de batterie chargé.
 
-----
-**Gestion Optimale de la Répartition :**
-
-Les gestionnaires de flotte doivent pouvoir optimiser la répartition des vélos en fonction de la demande, assurant une efficacité opérationnelle maximale.
-Sécurité des Données :
-
-Le système doit garantir la sécurité des données des utilisateurs, y compris leurs informations de localisation et de réservation.
-Expérience Utilisateur Transparente :
-
-L'ensemble du processus, de la localisation du vélo à la réservation et au retour, doit être fluide et transparent pour les utilisateurs.
-
 ## Exigences non fonctionnelles
 
 * Les interactions machine-machine doivent se faire via le messaging
