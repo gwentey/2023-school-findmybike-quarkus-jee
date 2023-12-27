@@ -1,17 +1,17 @@
 package fr.pantheonsorbonne.ufr27.miage.dao;
 
-import fr.pantheonsorbonne.ufr27.miage.model.Manager;
+import fr.pantheonsorbonne.ufr27.miage.model.Velo;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 
 @ApplicationScoped
-public class ManagerDAOImp implements ManagerDAO {
+public class VeloDAOImp implements VeloDAO {
     @Inject
     EntityManager em;
 
     @Override
-    public Manager findById(String idManager) {
-        return em.find(Manager.class, idManager);
+    public Velo findById(int idVelo) {
+        return em.find(Velo.class, idVelo);
     }
 }
