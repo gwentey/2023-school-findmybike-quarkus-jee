@@ -23,7 +23,7 @@ public class Main implements Runnable {
 
     @Override
     public void run() {
-
+F
         System.setProperty(TextIoFactory.TEXT_TERMINAL_CLASS_PROPERTY, SwingTextTerminal.class.getName());
         TextIO textIO = TextIoFactory.getTextIO();
         var terminal = TextIoFactory.getTextTerminal();
