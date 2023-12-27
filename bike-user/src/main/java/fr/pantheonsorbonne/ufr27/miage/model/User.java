@@ -2,25 +2,28 @@ package fr.pantheonsorbonne.ufr27.miage.model;
 
 import jakarta.persistence.*;
 
-import java.util.UUID;
-
+@Entity
 public class User {
 
-	private String idUser;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "idUser", nullable = false)
+	private int idUser;
+	@Column(name = "nom", nullable = false)
+
 	private String nom;
+	@Column(name = "prenom", nullable = false)
+
 	private String prenom;
+	@Column(name = "pseudo", nullable = false)
+
 	private String pseudo;
+	@Column(name = "password", nullable = false)
+
 	private String password;
 
-	public User(String nom, String prenom, String pseudo, String password) {
-		this.idUser = UUID.randomUUID().toString();
-		this.nom = nom;
-		this.prenom = prenom;
-		this.pseudo = pseudo;
-		this.password = password;
-	}
 
-	public String getId() {
+	public int getId() {
 		return idUser;
 	}
 
