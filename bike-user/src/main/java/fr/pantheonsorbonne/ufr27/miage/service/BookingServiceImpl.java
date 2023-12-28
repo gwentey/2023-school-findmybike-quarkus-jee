@@ -1,6 +1,5 @@
 package fr.pantheonsorbonne.ufr27.miage.service;
 
-import fr.pantheonsorbonne.ufr27.miage.dao.BikeDAO;
 import fr.pantheonsorbonne.ufr27.miage.dao.BookingDAO;
 import fr.pantheonsorbonne.ufr27.miage.model.Booking;
 import jakarta.enterprise.context.ApplicationScoped;

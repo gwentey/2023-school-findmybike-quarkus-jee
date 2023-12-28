@@ -1,7 +1,6 @@
 package fr.pantheonsorbonne.ufr27.miage.model;
 
 import jakarta.persistence.*;
-import org.locationtech.jts.geom.Point;
 
 @Entity
 public class Booking {
@@ -14,7 +13,6 @@ public class Booking {
 	private Bike bike;
 	@ManyToOne
 	private User user;
-
 
 	public int getIdBooking() {
 		return idBooking;

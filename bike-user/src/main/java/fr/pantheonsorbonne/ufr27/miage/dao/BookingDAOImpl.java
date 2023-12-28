@@ -8,11 +8,8 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
 
-import java.awt.print.Book;
-import java.time.Instant;
-
 @ApplicationScoped
-public class BookingDAOImp implements BookingDAO {
+public class BookingDAOImpl implements BookingDAO {
 
 	@PersistenceContext
 	EntityManager em;
