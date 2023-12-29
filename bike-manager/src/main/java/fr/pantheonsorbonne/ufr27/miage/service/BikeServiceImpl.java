@@ -1,47 +1,27 @@
 package fr.pantheonsorbonne.ufr27.miage.service;
 
-import fr.pantheonsorbonne.ufr27.miage.camel.BikeGateway;
-import fr.pantheonsorbonne.ufr27.miage.dao.BookingDAO;
-import fr.pantheonsorbonne.ufr27.miage.model.Bike;
-import fr.pantheonsorbonne.ufr27.miage.model.Booking;
-import fr.pantheonsorbonne.ufr27.miage.model.User;
+import fr.pantheonsorbonne.ufr27.miage.dao.BikeDAO;
+import io.quarkus.logging.Log;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 
 @ApplicationScoped
-public class UserServiceImpl implements UserService {
+public class BikeServiceImpl implements BikeService {
 
 	@Inject
-	BookingDAO bookingDAO;
-
-	@Inject
-	BikeGateway bikeGateway;
+	BikeDAO bikeDAO;
 
 	@PersistenceContext
 	EntityManager em;
 
 	@Override
-	public Booking book(int userId, int bikeId) {
-
-		Bike bike = em.find(Bike.class, bikeId);
-		System.out.println("BIKE DETECTED :" + bike);
-		User user = em.find(User.class, userId);
-
-		Booking booking = bookingDAO.save(bike, user);
-		return booking;
-	}
-
-	@Override
-	public Bike getABikeById(int idBike) {
-		return em.find(Bike.class, idBike);
-	}
-
-	@Override
 	public void nextBikeAvailableByPosition(Double positionX, Double positionY) {
-		bikeGateway.nextBikeAvailableByPosition(positionX,positionY);
+		//        List<String> ticketForVenue = em.createQuery("SELECT t.seatReference from Ticket t where t.idVenue.id=:venueId and t.seatReference is not null").setParameter("venueId", venueId).getResultList();
+		Log.info("message nextBikeAvailableByPosition recu v2");
 	}
+
 
 	/*
 	@Override

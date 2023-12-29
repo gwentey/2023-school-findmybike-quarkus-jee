@@ -1,10 +1,14 @@
 package fr.pantheonsorbonne.ufr27.miage.camel;
 
 
+import fr.pantheonsorbonne.ufr27.miage.model.Bike;
 import fr.pantheonsorbonne.ufr27.miage.model.Booking;
+import io.quarkus.logging.Log;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import org.apache.camel.CamelContext;
+import org.apache.camel.Exchange;
+import org.apache.camel.Processor;
 import org.apache.camel.builder.RouteBuilder;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 
@@ -18,7 +22,7 @@ public class CamelRoutes extends RouteBuilder {
     String jmsPrefix;
 
     @Inject
-    BookingGateway bookingHandler;
+    BikeGateway bikeHandler;
 
     @Inject
     CamelContext camelContext;
@@ -28,12 +32,9 @@ public class CamelRoutes extends RouteBuilder {
 
         camelContext.setTracing(true);
 
-        /*
-        from("sjms2:topic:M1.BIKE_BOOKING")//
+        from("sjms2:M1.bike-response")
                 .autoStartup(isRouteEnabled)
-                .log("Book bike received: ${in.headers}")//
-                .unmarshal().json(Booking.class)//
-                .bean(bookingHandler, "book").marshal().json();
-        */
+                .log("YOUPI bike recu")
+                .unmarshal().json(Bike.class);
     }
 }

@@ -31,4 +31,12 @@ public class UserResource {
         return Response.ok(b).build();
     }
 
+    @Path("bike/available")
+    @Produces(MediaType.APPLICATION_JSON)
+    @GET
+    public Response bikeAvailable() {
+        userService.nextBikeAvailableByPosition(48.858844, 2.294350);
+        return Response.ok().build();
+    }
+
 }

@@ -14,9 +14,9 @@ public class Bike {
 	private int idBike;
 
 	@Column(name = "positionY", nullable = false)
-	private BigDecimal positionY;
+	private Double positionY;
 	@Column(name = "positionX", nullable = false)
-	private BigDecimal positionX;
+	private Double positionX;
 
 	@Column(name = "batterie", nullable = false)
 	private int batterie;
@@ -36,19 +36,19 @@ public class Bike {
 		batterie = batterie;
 	}
 
-	public BigDecimal getPositionY() {
+	public Double getPositionY() {
 		return positionY;
 	}
 
-	public void setPositionY(BigDecimal positionY) {
+	public void setPositionY(Double positionY) {
 		this.positionY = positionY;
 	}
 
-	public BigDecimal getPositionX() {
+	public Double getPositionX() {
 		return positionX;
 	}
 
-	public void setPositionX(BigDecimal positionX) {
+	public void setPositionX(Double positionX) {
 		this.positionX = positionX;
 	}
 }
