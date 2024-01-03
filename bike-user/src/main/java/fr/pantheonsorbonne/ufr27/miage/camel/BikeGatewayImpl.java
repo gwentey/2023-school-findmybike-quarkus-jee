@@ -44,9 +44,8 @@ public class BikeGatewayImpl implements BikeGateway {
             message.setJMSCorrelationID(correlationId);
 
             Destination responseQueue = context.createQueue(responseQueueName);
-            message.setJMSReplyTo(responseQueue);
 
-            context.createProducer().send(context.createQueue("M1.bike-localisation?exchangePattern=InOut"), message);
+            context.createProducer().send(context.createQueue("M1.bike-localisation"), message);
 
             System.out.println("1 - Sent request");
             System.out.println("\tTime:       " + System.currentTimeMillis() + " ms");
@@ -57,7 +56,7 @@ public class BikeGatewayImpl implements BikeGateway {
 
             // Attendre la réponse
             JMSConsumer consumer = context.createConsumer(responseQueue);
-            Message responseMessage = consumer.receive(5000);
+            Message responseMessage = consumer.receive();
 
             if (responseMessage != null) {
                 System.out.println("1 - Response receive request");

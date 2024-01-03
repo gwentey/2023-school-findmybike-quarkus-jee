@@ -31,15 +31,22 @@ public class BikeGatewayImpl implements BikeGateway {
     @Override
     public Bike nextBikeAvailableByPosition(BikeRequest bikeRequest) {
         List<Bike> allBikes = bikeDAO.findAll();
-        if (!allBikes.isEmpty()) {
-            Random random = new Random();
-            int randomIndex = -1;
-            while (randomIndex < 0 || randomIndex >= allBikes.size()) {
-                randomIndex = random.nextInt(allBikes.size());
+        Bike closestBike = null;
+        double closestDistance = Double.MAX_VALUE;
+
+        for (Bike bike : allBikes) {
+            double distance = calculateDistance(bikeRequest.positionX(), bikeRequest.positionY(),
+                    bike.getPositionX(), bike.getPositionY());
+
+            if (distance < closestDistance) {
+                closestBike = bike;
+                closestDistance = distance;
             }
-            Bike bike = allBikes.get(randomIndex);
-            return bike;
         }
-        return null;
+        return closestBike;
+    }
+
+    private double calculateDistance(double x1, double y1, double x2, double y2) {
+        return Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
     }
 }

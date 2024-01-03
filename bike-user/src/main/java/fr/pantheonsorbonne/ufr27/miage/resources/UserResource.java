@@ -36,7 +36,7 @@ public class UserResource {
     @GET
     public Response bikeAvailable(@PathParam("positionX") double positionX, @PathParam("positionY") double positionY) {
         try {
-            Bike b = userService.nextBikeAvailableByPosition(48.858844, 2.294350);
+            Bike b = userService.nextBikeAvailableByPosition(positionX, positionY);
             if (b != null) {
                 return Response.ok(b).build();
             } else {

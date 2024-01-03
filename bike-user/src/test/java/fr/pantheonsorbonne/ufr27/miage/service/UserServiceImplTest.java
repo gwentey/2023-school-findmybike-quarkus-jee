@@ -2,13 +2,24 @@ package fr.pantheonsorbonne.ufr27.miage.service;
 
 
 import fr.pantheonsorbonne.ufr27.miage.camel.BikeGateway;
+import fr.pantheonsorbonne.ufr27.miage.camel.BikeGatewayImpl;
 import fr.pantheonsorbonne.ufr27.miage.dao.UserDAO;
+import fr.pantheonsorbonne.ufr27.miage.dto.BikeRequest;
+import fr.pantheonsorbonne.ufr27.miage.model.Bike;
+
+import static io.restassured.RestAssured.given;
+import static org.hamcrest.Matchers.equalTo;
+import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.*;
+import java.util.Arrays;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+
+import static org.mockito.ArgumentMatchers.any;
 
 @ExtendWith(MockitoExtension.class)
 class UserServiceImplTest {
@@ -19,7 +30,7 @@ class UserServiceImplTest {
     UserDAO userDAO;
 
     @Mock
-    BikeGateway bikeGateway;
+    BikeGatewayImpl bikeGateway;
 
     @BeforeEach
     public void setup() {
@@ -27,11 +38,25 @@ class UserServiceImplTest {
     }
 
     @Test
-    void nextBikeAvailableByPosition() {
+    public void testBikeAvailableEndpoint() {
+        double positionX = 2.2932196427317164;
+        double positionY = 48.85844443869412;
 
-        userService.nextBikeAvailableByPosition(48.858844, 2.294350);
-
+        given()
+                .pathParam("positionX", positionX)
+                .pathParam("positionY", positionY)
+                .when()
+                .get("http://localhost:8082/user/bike/available/{positionX}/{positionY}")
+                .then()
+                .statusCode(200)
+                .body("idBike", equalTo(1))
+                .body("positionX", equalTo(2.29435f))
+                .body("positionY", equalTo(48.858844f))
+                .body("batterie", equalTo(100))
+                .body("managerId", equalTo(1));
     }
+
+
 
 
     /*

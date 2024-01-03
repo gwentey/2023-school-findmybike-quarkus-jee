@@ -37,6 +37,10 @@ public class CamelRoutes extends RouteBuilder {
 
         camelContext.setTracing(true);
 
+        /**
+         * Cette route consomme des messages de la queue 'M1.bike-localisation', qui contiennent des demandes
+         * pour localiser les vélos disponibles à proximité d'une position spécifique
+         */
         from("sjms2:M1.bike-localisation")
                 .autoStartup(isRouteEnabled)
                 .unmarshal().json(BikeRequest.class)
