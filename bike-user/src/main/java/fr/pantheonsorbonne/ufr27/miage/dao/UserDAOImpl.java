@@ -15,16 +15,4 @@ public class UserDAOImpl implements UserDAO {
     @PersistenceContext(name = "mysql")
     EntityManager em;
 
-    @Transactional
-    public User findByPseudo(String pseudo) {
-        try {
-            User user = em.createQuery("SELECT u FROM User u WHERE u.pseudo = :pseudo", User.class)
-                    .setParameter("pseudo", pseudo)
-                    .getSingleResult();
-            return user;
-        } catch (Exception e) {
-            // Gérer l'exception ou logger l'erreur
-            return null;
-        }
-    }
 }

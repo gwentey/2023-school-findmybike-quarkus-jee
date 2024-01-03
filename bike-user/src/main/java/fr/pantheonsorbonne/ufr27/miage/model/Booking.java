@@ -18,6 +18,10 @@ public class Booking {
 		return idBooking;
 	}
 
+	public void setIdBooking(int idBooking) {
+		this.idBooking = idBooking;
+	}
+
 	public Bike getBike() {
 		return bike;
 	}

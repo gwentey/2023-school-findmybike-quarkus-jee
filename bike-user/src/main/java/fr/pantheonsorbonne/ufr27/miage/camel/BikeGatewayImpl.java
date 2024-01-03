@@ -89,4 +89,47 @@ public class BikeGatewayImpl implements BikeGateway {
         return null;
     }
 
+    /**
+     * Recherche et renvoie un vélo spécifique par son identifiant.
+     * Cette méthode envoie une demande à une queue (par exemple, 'M1.bike-id') avec l'identifiant du vélo
+     * et attend une réponse avec les détails du vélo demandé.
+     *
+     * @param idBike L'identifiant du vélo à rechercher.
+     * @return Un objet Bike correspondant au vélo demandé, ou null si aucun vélo n'est trouvé
+     * ou en cas d'erreur ou de timeout.
+     */
+    @Override
+    public Bike getABikeById(int idBike) {
+        try (JMSContext context = connectionFactory.createContext(JMSContext.AUTO_ACKNOWLEDGE)) {
+            // Préparation et envoi de la demande
+            Message message = context.createMessage();
+            message.setIntProperty("idBike", idBike);
+
+            String correlationId = UUID.randomUUID().toString();
+            message.setJMSCorrelationID(correlationId);
+
+            Destination responseQueue = context.createQueue("M1.bike-response-id");
+
+            context.createProducer().send(context.createQueue("M1.bike-id"), message);
+
+            // Log de la demande
+            System.out.println("Demande de vélo par ID envoyée. ID: " + idBike);
+
+            Message responseMessage = context.createConsumer(responseQueue).receive();
+            if (responseMessage instanceof TextMessage) {
+                String responseText = ((TextMessage) responseMessage).getText();
+                if (responseText.startsWith("Aucun vélo trouvé")) {
+                    System.err.println(responseText);
+                    return null;
+                } else {
+                    return objectMapper.readValue(responseText, Bike.class);
+                }
+            } else {
+                System.err.println("Réponse non attendue ou timeout :" + System.currentTimeMillis());
+            }
+        } catch (JMSException | IOException e) {
+            throw new RuntimeException(e);
+        }
+        return null;
+    }
 }

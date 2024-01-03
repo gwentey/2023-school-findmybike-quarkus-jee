@@ -5,7 +5,8 @@ import fr.pantheonsorbonne.ufr27.miage.model.Bike;
 
 
 public interface BikeGateway {
-
         Bike nextBikeAvailableByPosition(BikeRequest bikeRequest);
+        public Bike getABikeById(int idBike);
+
 }
 

@@ -11,6 +11,7 @@ import jakarta.persistence.*;
 @Entity
 @UserDefinition
 public class User extends PanacheEntity {
+
 	@Column(name = "nom", nullable = false)
 	private String nom;
 	@Column(name = "prenom", nullable = false)
@@ -21,6 +22,7 @@ public class User extends PanacheEntity {
 	private String password;
 	@Roles
 	public String role;
+
 
 	public String getNom() {
 		return nom;

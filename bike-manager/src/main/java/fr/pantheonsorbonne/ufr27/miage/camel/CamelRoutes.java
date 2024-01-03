@@ -54,7 +54,20 @@ public class CamelRoutes extends RouteBuilder {
                 .log("Message envoyé à la queue M1.bike-response avec Correlation ID: ${header.JMSCorrelationID}");
 
 
-
+        from("sjms2:M1.bike-id")
+                .autoStartup(isRouteEnabled)
+                .process(exchange -> {
+                    int idBike = exchange.getIn().getHeader("idBike", Integer.class);
+                    Bike bike = bikeHandler.getABikeById(idBike);
+                    if (bike != null) {
+                        String responseJson = objectMapper.writeValueAsString(bike);
+                        exchange.getIn().setBody(responseJson);
+                    } else {
+                        exchange.getIn().setBody("Aucun vélo trouvé pour l'ID: " + idBike);
+                    }
+                })
+                .to("sjms2:M1.bike-response-id")
+                .log("Réponse envoyée pour la requête de vélo par ID à la queue M1.bike-response-id");
 
     }
 

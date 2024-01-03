@@ -46,7 +46,18 @@ public class BikeGatewayImpl implements BikeGateway {
         return closestBike;
     }
 
+    @Override
+    public Bike getABikeById(int idBike) {
+        Bike bike = bikeDAO.findById(idBike);
+        if (bike != null) {
+            return bike;
+        } else {
+            return null;
+        }
+    }
+
     private double calculateDistance(double x1, double y1, double x2, double y2) {
         return Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
     }
+
 }

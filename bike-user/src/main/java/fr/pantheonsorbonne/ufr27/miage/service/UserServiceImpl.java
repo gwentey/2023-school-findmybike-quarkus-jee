@@ -28,7 +28,7 @@ public class UserServiceImpl implements UserService {
 	EntityManager em;
 
 	@Override
-	public Booking book(int userId, int bikeId) {
+	public Booking book(long userId, int bikeId) {
 
 		Bike bike = em.find(Bike.class, bikeId);
 		System.out.println("BIKE DETECTED :" + bike);
@@ -40,8 +40,8 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public Bike getABikeById(int idBike) {
-		return em.find(Bike.class, idBike);
-	}
+		Bike b = bikeGateway.getABikeById(idBike);
+		return b;	}
 
 	@Override
 	public Bike nextBikeAvailableByPosition(Double positionX, Double positionY) {
