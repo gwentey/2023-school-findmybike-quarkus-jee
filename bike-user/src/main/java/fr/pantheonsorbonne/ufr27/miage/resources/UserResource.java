@@ -1,12 +1,9 @@
 package fr.pantheonsorbonne.ufr27.miage.resources;
 
-import fr.pantheonsorbonne.ufr27.miage.dao.BikeDAO;
-import fr.pantheonsorbonne.ufr27.miage.dao.UserDAO;
 import fr.pantheonsorbonne.ufr27.miage.dao.UserDAOImpl;
 import fr.pantheonsorbonne.ufr27.miage.model.Bike;
 import fr.pantheonsorbonne.ufr27.miage.model.Booking;
 import fr.pantheonsorbonne.ufr27.miage.model.User;
-import fr.pantheonsorbonne.ufr27.miage.service.UserService;
 import fr.pantheonsorbonne.ufr27.miage.service.UserServiceImpl;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;

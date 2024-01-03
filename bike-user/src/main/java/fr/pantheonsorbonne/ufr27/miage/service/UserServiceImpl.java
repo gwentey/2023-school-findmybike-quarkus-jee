@@ -1,18 +1,15 @@
 package fr.pantheonsorbonne.ufr27.miage.service;
 
-import fr.pantheonsorbonne.ufr27.miage.camel.BikeGateway;
 import fr.pantheonsorbonne.ufr27.miage.camel.BikeGatewayImpl;
 import fr.pantheonsorbonne.ufr27.miage.dao.BikeDAOImpl;
 import fr.pantheonsorbonne.ufr27.miage.dao.BookingDAO;
 import fr.pantheonsorbonne.ufr27.miage.dao.UserDAO;
-import fr.pantheonsorbonne.ufr27.miage.dao.UserDAOImpl;
 import fr.pantheonsorbonne.ufr27.miage.model.Bike;
 import fr.pantheonsorbonne.ufr27.miage.model.Booking;
 import fr.pantheonsorbonne.ufr27.miage.model.User;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
+
 
 @ApplicationScoped
 public class UserServiceImpl implements UserService {
@@ -43,7 +40,6 @@ public class UserServiceImpl implements UserService {
 			throw new RuntimeException("Utilisateur ou vélo introuvable");
 		}
 	}
-
 
 	@Override
 	public Bike getABikeById(int idBike) {
