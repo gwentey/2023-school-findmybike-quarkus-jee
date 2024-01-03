@@ -31,12 +31,20 @@ public class UserResource {
         return Response.ok(b).build();
     }
 
-    @Path("bike/available")
+    @Path("bike/available/{positionX}/{positionY}")
     @Produces(MediaType.APPLICATION_JSON)
     @GET
-    public Response bikeAvailable() {
-        userService.nextBikeAvailableByPosition(48.858844, 2.294350);
-        return Response.ok().build();
+    public Response bikeAvailable(@PathParam("positionX") double positionX, @PathParam("positionY") double positionY) {
+        try {
+            Bike b = userService.nextBikeAvailableByPosition(48.858844, 2.294350);
+            if (b != null) {
+                return Response.ok(b).build();
+            } else {
+                return Response.status(Response.Status.NOT_FOUND).entity("Aucun vélo disponible").build();
+            }
+        } catch (Exception e) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Erreur interne du serveur").build();
+        }
     }
 
 }

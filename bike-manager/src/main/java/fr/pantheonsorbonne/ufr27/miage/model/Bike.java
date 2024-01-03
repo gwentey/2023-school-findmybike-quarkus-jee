@@ -1,5 +1,6 @@
 package fr.pantheonsorbonne.ufr27.miage.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
@@ -7,10 +8,10 @@ import java.math.BigDecimal;
 
 @Entity
 public class Bike {
-
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "idBike", nullable = false)
+	@JsonProperty("idBike")
 	private int idBike;
 
 	@Column(name = "positionY", nullable = false)
@@ -24,16 +25,12 @@ public class Bike {
 	@Column(name = "managerId", nullable = false)
 	private int managerId;
 
-	public int getId() {
+	public int getIdBike() {
 		return idBike;
 	}
 
-	public int getBatterie() {
-		return batterie;
-	}
-
-	public void setBatterie(int batterie) {
-		batterie = batterie;
+	public void setIdBike(int idBike) {
+		this.idBike = idBike;
 	}
 
 	public Double getPositionY() {
@@ -50,5 +47,21 @@ public class Bike {
 
 	public void setPositionX(Double positionX) {
 		this.positionX = positionX;
+	}
+
+	public int getBatterie() {
+		return batterie;
+	}
+
+	public void setBatterie(int batterie) {
+		this.batterie = batterie;
+	}
+
+	public int getManagerId() {
+		return managerId;
+	}
+
+	public void setManagerId(int managerId) {
+		this.managerId = managerId;
 	}
 }

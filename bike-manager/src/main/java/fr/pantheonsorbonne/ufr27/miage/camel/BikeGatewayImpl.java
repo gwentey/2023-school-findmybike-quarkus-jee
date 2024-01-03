@@ -31,17 +31,14 @@ public class BikeGatewayImpl implements BikeGateway {
     @Override
     public Bike nextBikeAvailableByPosition(BikeRequest bikeRequest) {
         List<Bike> allBikes = bikeDAO.findAll();
-        Log.info("getAllYes");
         if (!allBikes.isEmpty()) {
             Random random = new Random();
-
             int randomIndex = -1;
-
             while (randomIndex < 0 || randomIndex >= allBikes.size()) {
                 randomIndex = random.nextInt(allBikes.size());
             }
-            Log.info("je retourne : " + allBikes.get(randomIndex));
-            return allBikes.get(randomIndex);
+            Bike bike = allBikes.get(randomIndex);
+            return bike;
         }
         return null;
     }

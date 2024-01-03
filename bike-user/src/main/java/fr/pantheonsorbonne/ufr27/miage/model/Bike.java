@@ -1,23 +1,23 @@
 package fr.pantheonsorbonne.ufr27.miage.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
 
 
 @Entity
-@Table(name = "Bike")
 public class Bike {
-
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "idBike", nullable = false)
+	@JsonProperty("idBike")
 	private int idBike;
 
 	@Column(name = "positionY", nullable = false)
-	private BigDecimal positionY;
+	private Double positionY;
 	@Column(name = "positionX", nullable = false)
-	private BigDecimal positionX;
+	private Double positionX;
 
 	@Column(name = "batterie", nullable = false)
 	private int batterie;
@@ -25,8 +25,28 @@ public class Bike {
 	@Column(name = "managerId", nullable = false)
 	private int managerId;
 
-	public int getId() {
+	public int getIdBike() {
 		return idBike;
+	}
+
+	public void setIdBike(int idBike) {
+		this.idBike = idBike;
+	}
+
+	public Double getPositionY() {
+		return positionY;
+	}
+
+	public void setPositionY(Double positionY) {
+		this.positionY = positionY;
+	}
+
+	public Double getPositionX() {
+		return positionX;
+	}
+
+	public void setPositionX(Double positionX) {
+		this.positionX = positionX;
 	}
 
 	public int getBatterie() {
@@ -34,22 +54,14 @@ public class Bike {
 	}
 
 	public void setBatterie(int batterie) {
-		batterie = batterie;
+		this.batterie = batterie;
 	}
 
-	public BigDecimal getPositionY() {
-		return positionY;
+	public int getManagerId() {
+		return managerId;
 	}
 
-	public void setPositionY(BigDecimal positionY) {
-		this.positionY = positionY;
-	}
-
-	public BigDecimal getPositionX() {
-		return positionX;
-	}
-
-	public void setPositionX(BigDecimal positionX) {
-		this.positionX = positionX;
+	public void setManagerId(int managerId) {
+		this.managerId = managerId;
 	}
 }

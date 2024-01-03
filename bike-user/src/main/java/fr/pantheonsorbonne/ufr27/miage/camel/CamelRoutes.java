@@ -6,6 +6,7 @@ import fr.pantheonsorbonne.ufr27.miage.model.Booking;
 import io.quarkus.logging.Log;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import jakarta.jms.*;
 import org.apache.camel.CamelContext;
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
@@ -27,14 +28,13 @@ public class CamelRoutes extends RouteBuilder {
     @Inject
     CamelContext camelContext;
 
+    @Inject
+    ConnectionFactory connectionFactory;
+
     @Override
     public void configure() throws Exception {
 
         camelContext.setTracing(true);
 
-        from("sjms2:M1.bike-response")
-                .autoStartup(isRouteEnabled)
-                .log("YOUPI bike recu")
-                .unmarshal().json(Bike.class);
     }
 }

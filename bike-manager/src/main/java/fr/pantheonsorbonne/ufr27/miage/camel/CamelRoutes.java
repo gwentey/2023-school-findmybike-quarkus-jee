@@ -3,6 +3,7 @@ package fr.pantheonsorbonne.ufr27.miage.camel;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fr.pantheonsorbonne.ufr27.miage.dto.BikeRequest;
+import fr.pantheonsorbonne.ufr27.miage.model.Bike;
 import fr.pantheonsorbonne.ufr27.miage.service.BikeService;
 import io.quarkus.logging.Log;
 import jakarta.jms.JMSException;
@@ -28,19 +29,28 @@ public class CamelRoutes extends RouteBuilder {
     @Inject
     BikeGatewayImpl bikeHandler;
 
+    @Inject
+    ObjectMapper objectMapper;
+
     @Override
     public void configure() throws Exception {
 
         camelContext.setTracing(true);
 
-        from("sjms2:M1.bike-test?exchangePattern=InOut")
+        from("sjms2:M1.bike-localisation")
                 .autoStartup(isRouteEnabled)
                 .unmarshal().json(BikeRequest.class)
                 .bean(bikeHandler, "nextBikeAvailableByPosition")
                 .marshal().json()
-                .setBody(simple("${body}"))
-                .log("message recu avec succes")
-                .to("sjms2:M1.bike-response");
+                .process(exchange -> {
+                    String responseJson = exchange.getIn().getBody(String.class);
+                    exchange.getIn().setBody(responseJson);
+                })
+                .to("sjms2:M1.bike-response")
+                .log("Message envoyé à la queue M1.bike-response avec Correlation ID: ${header.JMSCorrelationID}");
+
+
+
 
     }
 

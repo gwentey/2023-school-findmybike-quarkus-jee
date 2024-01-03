@@ -11,5 +11,5 @@ public interface UserService {
 
 	public Bike getABikeById(int idBike);
 
-	public void nextBikeAvailableByPosition(Double positionX, Double positionY);
+	public Bike nextBikeAvailableByPosition(Double positionX, Double positionY);
 }

@@ -39,8 +39,9 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public void nextBikeAvailableByPosition(Double positionX, Double positionY) {
-		bikeGateway.nextBikeAvailableByPosition(positionX,positionY);
+	public Bike nextBikeAvailableByPosition(Double positionX, Double positionY) {
+		Bike b = bikeGateway.nextBikeAvailableByPosition(positionX,positionY);
+		return b;
 	}
 
 	/*

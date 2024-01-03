@@ -10,21 +10,20 @@ public class User {
 	@Column(name = "idUser", nullable = false)
 	private int idUser;
 	@Column(name = "nom", nullable = false)
-
 	private String nom;
 	@Column(name = "prenom", nullable = false)
-
 	private String prenom;
 	@Column(name = "pseudo", nullable = false)
-
 	private String pseudo;
 	@Column(name = "password", nullable = false)
-
 	private String password;
 
-
-	public int getId() {
+	public int getIdUser() {
 		return idUser;
+	}
+
+	public void setIdUser(int idUser) {
+		this.idUser = idUser;
 	}
 
 	public String getNom() {
