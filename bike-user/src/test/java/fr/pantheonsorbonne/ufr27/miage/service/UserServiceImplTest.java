@@ -43,6 +43,7 @@ class UserServiceImplTest {
         double positionY = 48.85844443869412;
 
         given()
+                .auth().basic("anthony", "anthonypass")
                 .pathParam("positionX", positionX)
                 .pathParam("positionY", positionY)
                 .when()

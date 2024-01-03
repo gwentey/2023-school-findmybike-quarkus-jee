@@ -1,9 +1,3 @@
-REPLACE INTO User (idUser, nom, prenom, pseudo, password) VALUES
-(1, 'Anthony', 'Rodrigues', 'anthony.rodrigues', 'anth'),
-(2, 'Jaho', 'Mvenge', 'jaho.mvenge', 'jaho'),
-(3, 'Louis', 'Bibal', 'louis.bibal', 'loui');
-
-
 REPLACE INTO Bike (idBike, positionY, positionX, batterie, managerId) VALUES
 (1, 48.858844, 2.294350, 100, 1),
 (2, 48.860611, 2.337643, 100, 2),

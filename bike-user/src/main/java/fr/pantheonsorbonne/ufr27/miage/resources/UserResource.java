@@ -2,7 +2,9 @@ package fr.pantheonsorbonne.ufr27.miage.resources;
 
 import fr.pantheonsorbonne.ufr27.miage.dao.BikeDAO;
 import fr.pantheonsorbonne.ufr27.miage.model.Bike;
+import fr.pantheonsorbonne.ufr27.miage.model.User;
 import fr.pantheonsorbonne.ufr27.miage.service.UserService;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
@@ -33,6 +35,7 @@ public class UserResource {
 
     @Path("bike/available/{positionX}/{positionY}")
     @Produces(MediaType.APPLICATION_JSON)
+    @RolesAllowed("user")
     @GET
     public Response bikeAvailable(@PathParam("positionX") double positionX, @PathParam("positionY") double positionY) {
         try {
@@ -46,5 +49,7 @@ public class UserResource {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Erreur interne du serveur").build();
         }
     }
+
+
 
 }

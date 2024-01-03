@@ -2,6 +2,8 @@ package fr.pantheonsorbonne.ufr27.miage.service;
 
 import fr.pantheonsorbonne.ufr27.miage.camel.BikeGateway;
 import fr.pantheonsorbonne.ufr27.miage.dao.BookingDAO;
+import fr.pantheonsorbonne.ufr27.miage.dao.UserDAO;
+import fr.pantheonsorbonne.ufr27.miage.dao.UserDAOImpl;
 import fr.pantheonsorbonne.ufr27.miage.model.Bike;
 import fr.pantheonsorbonne.ufr27.miage.model.Booking;
 import fr.pantheonsorbonne.ufr27.miage.model.User;
@@ -10,12 +12,15 @@ import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 
+import java.util.Optional;
+
 @ApplicationScoped
 public class UserServiceImpl implements UserService {
 
 	@Inject
 	BookingDAO bookingDAO;
-
+	@Inject
+	UserDAOImpl userDAO;
 	@Inject
 	BikeGateway bikeGateway;
 
@@ -43,6 +48,24 @@ public class UserServiceImpl implements UserService {
 		Bike b = bikeGateway.nextBikeAvailableByPosition(positionX,positionY);
 		return b;
 	}
+
+	@Override
+	public User validateUser(String pseudo, String password) {
+		// Récupérer l'utilisateur par son pseudo
+		User user = userDAO.findByPseudo(pseudo);
+
+		if (user != null) {
+			// Vérifier que le mot de passe est correct
+			if (user.getPassword().equals(password)) {
+				System.out.println("User OKKKKK");
+				return user;
+			}
+		}
+		// Si l'utilisateur n'existe pas ou si le mot de passe est incorrect, retourner null
+		System.out.println("User FAUXXXXXXX");
+		return null;
+	}
+
 
 	/*
 	@Override
