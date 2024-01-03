@@ -6,5 +6,6 @@ import fr.pantheonsorbonne.ufr27.miage.model.User;
 
 public interface BookingDAO {
 
-	Booking save(Bike bike, User user);
+	Booking save(Booking booking);
+
 }

@@ -16,10 +16,7 @@ public class BookingDAOImpl implements BookingDAO {
 
 	@Override
 	@Transactional
-	public Booking save(Bike bike, User user) {
-		Booking booking = new Booking();
-		booking.setBike(bike);
-		booking.setUser(user);
+	public Booking save(Booking booking) {
 		em.persist(booking);
 		return booking;
 	}

@@ -1,6 +1,7 @@
 package fr.pantheonsorbonne.ufr27.miage.dao;
 
 import fr.pantheonsorbonne.ufr27.miage.model.Bike;
+import fr.pantheonsorbonne.ufr27.miage.model.Booking;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
@@ -16,5 +17,18 @@ public class BikeDAOImpl implements BikeDAO {
     @Transactional
     public Bike findById(int idBike) {
         return em.find(Bike.class, idBike);
+    }
+
+    @Override
+    @Transactional
+    public Bike save(Bike bike) {
+        em.persist(bike);
+        return bike;
+    }
+
+    @Override
+    @Transactional
+    public Bike merge(Bike bike) {
+        return em.merge(bike);
     }
 }
