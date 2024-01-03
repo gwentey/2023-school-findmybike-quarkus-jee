@@ -1,25 +1,19 @@
 package fr.pantheonsorbonne.ufr27.miage.service;
-
-
-import fr.pantheonsorbonne.ufr27.miage.camel.BikeGateway;
 import fr.pantheonsorbonne.ufr27.miage.camel.BikeGatewayImpl;
 import fr.pantheonsorbonne.ufr27.miage.dao.UserDAO;
-import fr.pantheonsorbonne.ufr27.miage.dto.BikeRequest;
-import fr.pantheonsorbonne.ufr27.miage.model.Bike;
 
-import static io.restassured.RestAssured.given;
-import static org.hamcrest.Matchers.equalTo;
-import static org.mockito.Mockito.*;
-import static org.junit.jupiter.api.Assertions.*;
-import java.util.Arrays;
+import fr.pantheonsorbonne.ufr27.miage.model.Bike;
 import org.junit.jupiter.api.BeforeEach;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import static org.mockito.ArgumentMatchers.any;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.when;
+
 
 @ExtendWith(MockitoExtension.class)
 class UserServiceImplTest {
@@ -34,71 +28,24 @@ class UserServiceImplTest {
 
     @BeforeEach
     public void setup() {
+        Bike expectedBike = new Bike();
+        expectedBike.setIdBike(1);
+        expectedBike.setPositionX(2.29435);
+        expectedBike.setPositionY(48.858844);
+        expectedBike.setBatterie(100);
+        expectedBike.setManagerId(1);
 
+        when(bikeGateway.nextBikeAvailableByPosition(2.2932196427317164, 48.85844443869412)).thenReturn(expectedBike);
     }
 
     @Test
-    public void testBikeAvailableEndpoint() {
-        double positionX = 2.2932196427317164;
-        double positionY = 48.85844443869412;
-
-        given()
-                .auth().basic("anthony", "anthonypass")
-                .pathParam("positionX", positionX)
-                .pathParam("positionY", positionY)
-                .when()
-                .get("http://localhost:8082/user/bike/available/{positionX}/{positionY}")
-                .then()
-                .statusCode(200)
-                .body("idBike", equalTo(1))
-                .body("positionX", equalTo(2.29435f))
-                .body("positionY", equalTo(48.858844f))
-                .body("batterie", equalTo(100))
-                .body("managerId", equalTo(1));
+    public void testNextBikeAvailableByPosition() {
+        Bike result = userService.nextBikeAvailableByPosition(2.2932196427317164, 48.85844443869412);
+        assertEquals(1, result.getIdBike());
+        assertEquals(2.29435, result.getPositionX());
+        assertEquals(48.858844, result.getPositionY());
+        assertEquals(100, result.getBatterie());
+        assertEquals(1, result.getManagerId());
     }
-
-
-
-
-    /*
-    @Test
-    void bookVoid() throws UnsuficientQuotaForVenueException, NoSuchTicketException {
-
-
-        bookingService.book(new Booking(1, 1, 0, 0, standingTransitionalTicker, seatingTransitionalTicker));
-        verify(ticketDAO, never()).save(any(), any(), any());
-
-
-    }
-
-    @Test
-    void bookOneStanding() throws UnsuficientQuotaForVenueException, NoSuchTicketException {
-
-
-        bookingService.book(new Booking(1, 1, 1, 0, standingTransitionalTicker, seatingTransitionalTicker));
-        verify(ticketDAO, times(1)).save(any(), any(), any());
-        assertEquals(1, standingTransitionalTicker.size());
-        assertEquals(0, seatingTransitionalTicker.size());
-
-
-    }
-
-    @Test
-    void bookOneSeating() throws UnsuficientQuotaForVenueException, NoSuchTicketException {
-
-
-        bookingService.book(new Booking(1, 1, 0, 1, standingTransitionalTicker, seatingTransitionalTicker));
-        verify(ticketDAO, times(1)).save(any(), any(), any());
-        assertEquals(0, standingTransitionalTicker.size());
-        assertEquals(1, seatingTransitionalTicker.size());
-
-    }
-
-    @Test
-    void bookNotEnough() throws UnsuficientQuotaForVenueException {
-
-        assertThrows(UnsuficientQuotaForVenueException.class, () -> bookingService.book(new Booking(1, 1, 99, 99, standingTransitionalTicker, seatingTransitionalTicker)));
-    }
-    */
 
 }

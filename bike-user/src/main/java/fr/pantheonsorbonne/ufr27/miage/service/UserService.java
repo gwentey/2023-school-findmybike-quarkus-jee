@@ -2,9 +2,6 @@ package fr.pantheonsorbonne.ufr27.miage.service;
 
 import fr.pantheonsorbonne.ufr27.miage.model.Bike;
 import fr.pantheonsorbonne.ufr27.miage.model.Booking;
-import fr.pantheonsorbonne.ufr27.miage.model.User;
-
-import java.math.BigDecimal;
 
 public interface UserService {
 
@@ -14,6 +11,4 @@ public interface UserService {
 
 	public Bike nextBikeAvailableByPosition(Double positionX, Double positionY);
 
-	public User validateUser(String pseudo, String password);
-
-	}
+}
