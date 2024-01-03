@@ -2,6 +2,7 @@ package fr.pantheonsorbonne.ufr27.miage.resources;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.equalTo;
+import static org.mockito.Mockito.when;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -18,7 +19,7 @@ class UserRessourceImplTest {
 	}
 
 	@Test
-	public void testBikeAvailableEndpoint() {
+	public void testBikeAvailableEndpointTest() {
 		double positionX = 2.2932196427317164;
 		double positionY = 48.85844443869412;
 
@@ -37,5 +38,22 @@ class UserRessourceImplTest {
 				.body("managerId", equalTo(1));
 	}
 
+	@Test
+	void getABikeByIdEndPointTest() {
+		int bikeId = 4;
+
+		given()
+				.auth().basic("anthony", "anthonypass")
+				.pathParam("bikeId", bikeId)
+				.when()
+				.get("http://localhost:8082/user/bike/{bikeId}")
+				.then()
+				.statusCode(200)
+				.body("idBike", equalTo(4))
+				.body("positionX", equalTo(2.295f))
+				.body("positionY", equalTo(48.8738f))
+				.body("batterie", equalTo(100))
+				.body("managerId", equalTo(2));
+	}
 
 }
