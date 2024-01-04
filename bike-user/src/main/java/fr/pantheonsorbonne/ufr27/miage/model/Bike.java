@@ -9,7 +9,6 @@ import java.math.BigDecimal;
 @Entity
 public class Bike {
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "idBike", nullable = false)
 	@JsonProperty("idBike")
 	private int idBike;
