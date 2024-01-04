@@ -30,18 +30,20 @@ public class UserServiceImpl implements UserService {
 		User user = userDAO.findById(userId);
 
 		if (user != null && bike != null) {
+			boolean isBikeAlreadyBooked = bookingDAO.isBikeBooked(bikeId);
+			if (isBikeAlreadyBooked) {
+				throw new RuntimeException("Le vélo est déjà réservé");
+			}
 			Bike existingBike = bikeDAO.findById(bike.getIdBike());
 			if (existingBike == null) {
 				bikeDAO.save(bike);
 			} else {
-				// Si le vélo existe, mettre à jour les détails
 				existingBike.setBatterie(bike.getBatterie());
 				existingBike.setPositionX(bike.getPositionX());
 				existingBike.setPositionY(bike.getPositionY());
 				bikeDAO.merge(existingBike);
 				bike = existingBike;
 			}
-
 			Booking booking = new Booking();
 			booking.setBike(bike);
 			booking.setUser(user);
@@ -51,7 +53,6 @@ public class UserServiceImpl implements UserService {
 			throw new RuntimeException("Utilisateur ou vélo introuvable");
 		}
 	}
-
 
 	@Override
 	public Bike getABikeById(int idBike) {

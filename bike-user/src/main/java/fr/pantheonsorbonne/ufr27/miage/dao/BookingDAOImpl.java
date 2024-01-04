@@ -21,5 +21,14 @@ public class BookingDAOImpl implements BookingDAO {
 		return booking;
 	}
 
+	@Override
+	@Transactional
+	public boolean isBikeBooked(int bikeId) {
+		Long count = em.createQuery("SELECT COUNT(b) FROM Booking b WHERE b.bike.idBike = :bikeId", Long.class)
+				.setParameter("bikeId", bikeId)
+				.getSingleResult();
+		return count != null && count > 0;
+	}
+
 }
 
