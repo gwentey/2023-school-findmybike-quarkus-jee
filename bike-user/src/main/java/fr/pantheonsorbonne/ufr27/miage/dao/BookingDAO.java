@@ -7,5 +7,7 @@ import fr.pantheonsorbonne.ufr27.miage.model.User;
 public interface BookingDAO {
 
 	Booking save(Booking booking);
+	boolean isBikeBooked(int bikeId);
 
-}
+
+	}

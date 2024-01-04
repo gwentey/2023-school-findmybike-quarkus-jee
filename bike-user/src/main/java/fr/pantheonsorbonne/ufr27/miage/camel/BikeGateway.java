@@ -9,6 +9,6 @@ public interface BikeGateway {
         Bike nextBikeAvailableByPosition(Double positionX, Double positionY);
 
         Bike getABikeById(int idBike);
-
+        public boolean bookBikeById(int bikeId);
 }
 

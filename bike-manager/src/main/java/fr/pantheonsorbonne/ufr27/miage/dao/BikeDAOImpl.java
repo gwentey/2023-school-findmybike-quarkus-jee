@@ -25,4 +25,24 @@ public class BikeDAOImpl implements BikeDAO {
         return em.createQuery("SELECT b FROM Bike b", Bike.class)
                 .getResultList();
     }
+
+    @Override
+    @Transactional
+    public List<Bike> findAllAvailable() {
+        return em.createQuery("SELECT b FROM Bike b WHERE b.booked = false", Bike.class)
+                .getResultList();
+    }
+
+    @Override
+    @Transactional
+    public Bike save(Bike bike) {
+        em.persist(bike);
+        return bike;
+    }
+
+    @Override
+    @Transactional
+    public Bike merge(Bike bike) {
+        return em.merge(bike);
+    }
 }

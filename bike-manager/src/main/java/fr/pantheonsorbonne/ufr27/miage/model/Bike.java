@@ -2,6 +2,7 @@ package fr.pantheonsorbonne.ufr27.miage.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
+import org.hibernate.annotations.ColumnDefault;
 
 import java.math.BigDecimal;
 
@@ -24,6 +25,10 @@ public class Bike {
 
 	@Column(name = "managerId", nullable = false)
 	private int managerId;
+
+	@Column(name = "booked", nullable = false)
+	@ColumnDefault("false")
+	private Boolean booked;
 
 	public int getIdBike() {
 		return idBike;
@@ -63,5 +68,13 @@ public class Bike {
 
 	public void setManagerId(int managerId) {
 		this.managerId = managerId;
+	}
+
+	public boolean isBooked() {
+		return booked;
+	}
+
+	public void setBooked(boolean booked) {
+		this.booked = booked;
 	}
 }

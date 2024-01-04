@@ -53,7 +53,10 @@ public class CamelRoutes extends RouteBuilder {
                 .to("sjms2:M1.bike-response")
                 .log("Message envoyé à la queue M1.bike-response avec Correlation ID: ${header.JMSCorrelationID}");
 
-
+        /**
+         * Cette route consomme des messages de la queue 'M1.bike-id', qui contiennent des demandes
+         * pour connaitre un vélo à partir de son id
+         */
         from("sjms2:M1.bike-id")
                 .autoStartup(isRouteEnabled)
                 .process(exchange -> {
@@ -68,6 +71,25 @@ public class CamelRoutes extends RouteBuilder {
                 })
                 .to("sjms2:M1.bike-response-id")
                 .log("Réponse envoyée pour la requête de vélo par ID à la queue M1.bike-response-id");
+
+        /**
+         * Cette route consomme des messages de la queue 'M1.bike-book', qui contiennent des demandes
+         * pour réserver un vélo spécifique par son ID. La route traite la demande et renvoie une réponse
+         * indiquant si la réservation a été réussie.
+         */
+        from("sjms2:M1.bike-book")
+                .autoStartup(isRouteEnabled)
+                .process(exchange -> {
+                    int idBike = exchange.getIn().getHeader("bikeId", Integer.class);
+                    // Logique de traitement pour réserver le vélo
+                    boolean bookingResult = bikeHandler.bookBikeById(idBike);
+
+                    // Préparer et envoyer la réponse
+                    String responseText = Boolean.toString(bookingResult);
+                    exchange.getIn().setBody(responseText);
+                })
+                .to("sjms2:M1.bike-book-response")
+                .log("Réponse envoyée pour la réservation du vélo ID: ${header.bikeId} à la queue M1.bike-book-response");
 
     }
 

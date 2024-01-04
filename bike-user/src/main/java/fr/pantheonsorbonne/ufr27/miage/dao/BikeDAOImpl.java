@@ -33,26 +33,4 @@ public class BikeDAOImpl implements BikeDAO {
         return em.merge(bike);
     }
 
-    @Transactional
-    public void persistWithExistingId(Bike bike) {
-        EntityTransaction transaction = em.getTransaction();
-
-        try {
-            transaction.begin();
-            em.createNativeQuery("INSERT INTO Bike (idBike, batterie, positionX, positionY, managerId) VALUES (?, ?, ?, ?, ?)")
-                    .setParameter(1, bike.getIdBike())
-                    .setParameter(2, bike.getBatterie())
-                    .setParameter(3, bike.getPositionX())
-                    .setParameter(4, bike.getPositionY())
-                    .setParameter(5, bike.getManagerId())
-                    .executeUpdate();
-            transaction.commit();
-        } catch (Exception e) {
-            if (transaction.isActive()) {
-                transaction.rollback();
-            }
-            throw e;
-        }
-    }
-
 }
