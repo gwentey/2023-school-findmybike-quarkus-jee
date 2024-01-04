@@ -132,4 +132,40 @@ public class BikeGatewayImpl implements BikeGateway {
         }
         return null;
     }
+
+    /**
+     * Réserve un vélo par son identifiant et attend la confirmation
+     *
+     * @param bikeId L'identifiant du vélo à réserver.
+     * @return true si la réservation est réussie, false sinon.
+     */
+    @Override
+    public boolean bookBikeById(int bikeId) {
+        try (JMSContext context = connectionFactory.createContext(JMSContext.AUTO_ACKNOWLEDGE)) {
+            Message message = context.createMessage();
+            message.setIntProperty("bikeId", bikeId);
+
+            String correlationId = UUID.randomUUID().toString();
+            message.setJMSCorrelationID(correlationId);
+
+            Destination responseQueue = context.createQueue("M1.bike-book-response");
+
+            context.createProducer().send(context.createQueue("M1.bike-book"), message);
+
+            System.out.println("Demande de vélo par ID envoyée. ID: " + bikeId);
+
+            Message responseMessage = context.createConsumer(responseQueue).receive();
+            if (responseMessage instanceof TextMessage) {
+                String responseText = ((TextMessage) responseMessage).getText();
+                return Boolean.parseBoolean(responseText);
+            } else {
+                System.err.println("Réponse non attendue ou timeout: " + System.currentTimeMillis());
+                return false;
+            }
+        } catch (JMSException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+
 }

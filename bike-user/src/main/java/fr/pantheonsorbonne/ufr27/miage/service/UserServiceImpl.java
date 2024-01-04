@@ -47,8 +47,12 @@ public class UserServiceImpl implements UserService {
 			Booking booking = new Booking();
 			booking.setBike(bike);
 			booking.setUser(user);
-			bookingDAO.save(booking);
-			return booking;
+			if(bikeGateway.bookBikeById(bike.getIdBike())) {
+				bookingDAO.save(booking);
+				return booking;
+			} else {
+				throw new RuntimeException("Erreur coté Manager");
+			}
 		} else {
 			throw new RuntimeException("Utilisateur ou vélo introuvable");
 		}
