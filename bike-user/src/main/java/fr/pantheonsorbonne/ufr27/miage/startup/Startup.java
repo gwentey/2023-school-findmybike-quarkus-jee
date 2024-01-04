@@ -15,5 +15,7 @@ public class Startup {
 		User.deleteAll();
 		User.add("anthony","anthonypass", "rodrigues" ,"anthony", "user");
 		User.add("louis","louispass", "bibal" ,"louis", "user");
+		User.add("paul","paulpass", "adnet" ,"paul", "user");
+		User.add("jaho","jahopass", "mvenge" ,"jaho", "user");
 	}
 }
