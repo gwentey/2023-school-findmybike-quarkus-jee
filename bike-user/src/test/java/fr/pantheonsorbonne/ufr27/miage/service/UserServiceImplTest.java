@@ -27,7 +27,10 @@ class UserServiceImplTest {
     @BeforeEach
     public void setup() {
 
-        // testNextBikeAvailableByPosition
+    }
+
+    @Test
+    public void testNextBikeAvailableByPosition() {
         Bike expectedBike = new Bike();
         expectedBike.setIdBike(9);
         expectedBike.setPositionX(2.29435);
@@ -37,20 +40,6 @@ class UserServiceImplTest {
 
         lenient().when(bikeGateway.nextBikeAvailableByPosition(2.2932196427317164, 48.85844443869412)).thenReturn(expectedBike);
 
-        // testGetABikeById
-        Bike expectedBikeT = new Bike();
-        expectedBikeT.setIdBike(4);
-        expectedBikeT.setPositionX(2.295);
-        expectedBikeT.setPositionY(48.8738);
-        expectedBikeT.setBatterie(100);
-        expectedBikeT.setManagerId(2);
-
-        lenient().when(bikeGateway.getABikeById(4)).thenReturn(expectedBikeT);
-
-    }
-
-    @Test
-    public void testNextBikeAvailableByPosition() {
         Bike result = userService.nextBikeAvailableByPosition(2.2932196427317164, 48.85844443869412);
         assertEquals(9, result.getIdBike());
         assertEquals(2.29435, result.getPositionX());
@@ -61,6 +50,15 @@ class UserServiceImplTest {
 
     @Test
     public void testGetABikeById() {
+        Bike expectedBikeT = new Bike();
+        expectedBikeT.setIdBike(4);
+        expectedBikeT.setPositionX(2.295);
+        expectedBikeT.setPositionY(48.8738);
+        expectedBikeT.setBatterie(100);
+        expectedBikeT.setManagerId(2);
+
+        lenient().when(bikeGateway.getABikeById(4)).thenReturn(expectedBikeT);
+
         Bike result = userService.getABikeById(4);
         assertEquals(4, result.getIdBike());
         assertEquals(2.295, result.getPositionX());
