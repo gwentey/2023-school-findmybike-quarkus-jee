@@ -7,6 +7,7 @@ import fr.pantheonsorbonne.ufr27.miage.dao.UserDAO;
 import fr.pantheonsorbonne.ufr27.miage.model.Bike;
 import fr.pantheonsorbonne.ufr27.miage.model.Booking;
 import fr.pantheonsorbonne.ufr27.miage.model.User;
+import io.quarkus.logging.Log;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 
@@ -56,6 +57,38 @@ public class UserServiceImpl implements UserService {
 		} else {
 			throw new RuntimeException("Utilisateur ou vélo introuvable");
 		}
+	}
+
+	@Override
+	public void returnBike(long userId, Bike bike) {
+		User user = userDAO.findById(userId);
+		if (user == null) {
+			throw new RuntimeException("Utilisateur introuvable");
+		}
+
+		Bike returnedBike = bikeDAO.findById(bike.getIdBike());
+		if (returnedBike == null) {
+			throw new RuntimeException("Vélo introuvable");
+		}
+
+		// Vérification si l'utilisateur a une réservation pour ce vélo
+		Booking booking = bookingDAO.findBookingByUserIdAndBikeId(userId, returnedBike.getIdBike());
+		if (booking == null) {
+			throw new RuntimeException("Aucune réservation trouvée pour cet utilisateur et ce vélo");
+		} else {
+			bookingDAO.deleteBookingByUserIdAndBikeId(userId, returnedBike.getIdBike());
+
+			// Mise à jour du vélo dans le système
+			returnedBike.setPositionX(bike.getPositionX());
+			returnedBike.setPositionY(bike.getPositionY());
+			returnedBike.setBatterie(bike.getBatterie());
+
+			bikeDAO.merge(returnedBike);
+
+			bikeGateway.returnABike(returnedBike);
+			Log.info("Vélo " + returnedBike.getIdBike() + " retourné !");
+		}
+
 	}
 
 	@Override

@@ -167,5 +167,27 @@ public class BikeGatewayImpl implements BikeGateway {
         }
     }
 
+    /**
+     * Rend un vélo spécifique
+     *
+     * @param bike L'objet Bike représentant le vélo à rendre.
+     */
+    @Override
+    public void returnABike(Bike bike) {
+        try (JMSContext context = connectionFactory.createContext(JMSContext.AUTO_ACKNOWLEDGE)) {
+
+            String jsonString = objectMapper.writeValueAsString(bike);
+            TextMessage message = context.createTextMessage(jsonString);
+
+
+            context.createProducer().send(context.createQueue("M1.bike-return"), message);
+
+            System.out.println("Retour de vélo envoyée pour le vélo ID: " + bike.getIdBike());
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 
 }

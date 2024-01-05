@@ -46,6 +46,28 @@ public class UserResource {
         }
     }
 
+    @Path("bike/return")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @PUT
+    public Response returnBike(Bike bike) {
+        try {
+            String username = securityContext.getUserPrincipal().getName();
+            User user = userDAO.findByUsername(username);
+
+            userService.returnBike(user.id, bike);
+
+            return Response.ok().build();
+        } catch (RuntimeException e) {
+            return Response.status(Response.Status.NOT_FOUND).entity("Échec du retour du vélo: " + e.getMessage()).build();
+        } catch (Exception e) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Erreur lors du retour du vélo: " + e.getMessage()).build();
+        }
+
+    }
+
+
+
 
     @Path("bike/{bikeId}")
     @Produces(MediaType.APPLICATION_JSON)

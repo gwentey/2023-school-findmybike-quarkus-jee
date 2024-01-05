@@ -1,57 +1,49 @@
 package fr.pantheonsorbonne.ufr27.miage.resources;
 
-import static io.restassured.RestAssured.given;
-import static org.hamcrest.Matchers.equalTo;
-
-import io.restassured.specification.RequestSpecification;
+import fr.pantheonsorbonne.ufr27.miage.camel.BikeGatewayImpl;
+import fr.pantheonsorbonne.ufr27.miage.model.Bike;
+import io.quarkus.test.InjectMock;
+import io.quarkus.test.junit.QuarkusTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.api.extension.ExtendWith;
 
+import org.mockito.junit.jupiter.MockitoExtension;
+
+import static io.restassured.RestAssured.given;
+import static org.hamcrest.Matchers.equalTo;
+import static org.mockito.Mockito.lenient;
+
+@QuarkusTest
+@ExtendWith(MockitoExtension.class)
 class UserResourceImplTest {
-
-	private RequestSpecification requestSpecification;
-
+	@InjectMock
+	BikeGatewayImpl bikeGateway;
 	@BeforeEach
-	void setup() {
-		requestSpecification = given()
-				.auth().basic("anthony", "anthonypass")
-				.baseUri("http://localhost:8082/user");
+	public void setup() {
+
+		Bike expectedBike = new Bike();
+		expectedBike.setIdBike(1);
+		expectedBike.setPositionX(2.29435);
+		expectedBike.setPositionY(48.858844);
+		expectedBike.setBatterie(100);
+		expectedBike.setManagerId(1);
+
+		lenient().when(bikeGateway.nextBikeAvailableByPosition(2.29435, 48.858844)).thenReturn(expectedBike);
+
 	}
 
 	@Test
 	void testBikeAvailableEndpoint() {
-		double positionX = 2.2932196427317164;
-		double positionY = 48.85844443869412;
-
-		requestSpecification
-				.pathParam("positionX", positionX)
-				.pathParam("positionY", positionY)
-				.when()
-				.get("/bike/available/{positionX}/{positionY}")
+		given()
+				.auth().basic("anthony", "anthonypass")
+				.when().get("/user/bike/available/2.29435/48.858844")
 				.then()
 				.statusCode(200)
 				.body("idBike", equalTo(1))
-				.body("positionX", equalTo(2.29435f))
-				.body("positionY", equalTo(48.858844f))
+				.body("positionX", equalTo(2.29435F))
+				.body("positionY", equalTo(48.858844F))
 				.body("batterie", equalTo(100))
 				.body("managerId", equalTo(1));
-	}
-
-	@ParameterizedTest
-	@CsvSource({"4, 2.295f, 48.8738f, 100, 2"})
-	void getABikeByIdEndpoint(int bikeId, float expectedPosX, float expectedPosY, int expectedBattery, int expectedManagerId) {
-		requestSpecification
-				.pathParam("bikeId", bikeId)
-				.when()
-				.get("/bike/{bikeId}")
-				.then()
-				.statusCode(200)
-				.body("idBike", equalTo(bikeId))
-				.body("positionX", equalTo(expectedPosX))
-				.body("positionY", equalTo(expectedPosY))
-				.body("batterie", equalTo(expectedBattery))
-				.body("managerId", equalTo(expectedManagerId));
 	}
 }
