@@ -1,12 +1,9 @@
 package fr.pantheonsorbonne.ufr27.miage.camel;
 
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fr.pantheonsorbonne.ufr27.miage.dto.BikeRequest;
 import fr.pantheonsorbonne.ufr27.miage.model.Bike;
-import fr.pantheonsorbonne.ufr27.miage.service.BikeService;
-import io.quarkus.logging.Log;
-import jakarta.jms.JMSException;
+
 import org.apache.camel.*;
 import org.apache.camel.builder.RouteBuilder;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
@@ -14,9 +11,6 @@ import org.eclipse.microprofile.config.inject.ConfigProperty;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 
-import java.io.IOException;
-
-import static net.bytebuddy.implementation.MethodDelegation.to;
 
 @ApplicationScoped
 public class CamelRoutes extends RouteBuilder {
@@ -27,7 +21,7 @@ public class CamelRoutes extends RouteBuilder {
     @Inject
     CamelContext camelContext;
     @Inject
-    BikeGatewayImpl bikeHandler;
+    BikeGateway bikeHandler;
 
     @Inject
     ObjectMapper objectMapper;
@@ -90,6 +84,47 @@ public class CamelRoutes extends RouteBuilder {
                 })
                 .to("sjms2:M1.bike-book-response")
                 .log("Réponse envoyée pour la réservation du vélo ID: ${header.bikeId} à la queue M1.bike-book-response");
+
+        /**
+         * Cette route consomme des messages de la queue 'M1.bike-return', qui contiennent des informations
+         * sur les vélos retournés.
+         */
+        from("sjms2:M1.bike-return")
+                .autoStartup(isRouteEnabled)
+                .unmarshal().json(Bike.class)
+                .process(exchange -> {
+                    Bike bike = exchange.getIn().getBody(Bike.class);
+                    bikeHandler.dropABike(bike);
+                    System.out.println("Vélo retourné traité pour le vélo ID: " + bike.getIdBike());
+                })
+                .log("Traitement du vélo retourné pour le vélo ID: ${body.idBike}");
+
+
+        /**
+         * Cette route consomme des messages de la queue 'M1.bike-recharge-valid', qui contiennent des informations
+         * sur le vélo qui va etre rechargé.
+         */
+        from("sjms2:M1.bike-recharge-valid")
+                .autoStartup(isRouteEnabled)
+                .unmarshal().json(Bike.class)
+                .process(exchange -> {
+                    Bike bike = exchange.getIn().getBody(Bike.class);
+                    bikeHandler.setInCharge(bike);
+                    System.out.println("Vélo en cours de charge ID: " + bike.getIdBike());
+                });
+
+        /**
+         * Cette route consomme des messages de la queue 'M1.bike-recharge-end', qui contiennent des informations
+         * sur le vélo qui a été rechargé et replacé
+         */
+        from("sjms2:M1.bike-recharge-end")
+                .autoStartup(isRouteEnabled)
+                .unmarshal().json(Bike.class)
+                .process(exchange -> {
+                    Bike bike = exchange.getIn().getBody(Bike.class);
+                    bikeHandler.isCharged(bike);
+                    System.out.println("Vélo en cours de charge ID: " + bike.getIdBike());
+                });
 
     }
 

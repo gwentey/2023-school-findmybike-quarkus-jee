@@ -6,5 +6,5 @@ public interface UserDAO {
 
 	User findById(long idUser);
 	User findByUsername(String username);
-
-	}
+	void add(Long id, String username, String password, String nom, String prenom, String role);
+}

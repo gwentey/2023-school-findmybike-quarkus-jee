@@ -8,6 +8,10 @@ public interface BikeGateway {
         Bike nextBikeAvailableByPosition(BikeRequest bikeRequest);
         Bike getABikeById(int idBike);
         boolean bookBikeById(int bikeId);
+        boolean dropABike(Bike bike);
+        void sendABikeInCharge(Bike bike);
+        boolean setInCharge(Bike bike);
+        boolean isCharged(Bike bike);
 
 }
 

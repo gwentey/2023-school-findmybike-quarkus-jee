@@ -12,8 +12,10 @@ import jakarta.inject.Inject;
 import jakarta.jms.ConnectionFactory;
 import jakarta.jms.JMSContext;
 import jakarta.jms.Message;
+import jakarta.jms.TextMessage;
 import jakarta.transaction.Transactional;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Random;
 
@@ -21,49 +23,61 @@ import java.util.Random;
 public class BikeGatewayImpl implements BikeGateway {
 
     @Inject
-    BikeDAO bikeDAO;
+    BikeService bikeService;
+    @Inject
+    ConnectionFactory connectionFactory;
+
+    @Inject
+    ObjectMapper objectMapper;
+
+    /**
+     * Envoie une demande de recharge pour un vélo
+     *
+     * @param bike L'objet Bike représentant le vélo à recharger.
+     */
+    @Override
+    public void sendABikeInCharge(Bike bike) {
+        try (JMSContext context = connectionFactory.createContext(JMSContext.AUTO_ACKNOWLEDGE)) {
+
+            String jsonString = objectMapper.writeValueAsString(bike);
+            TextMessage message = context.createTextMessage(jsonString);
+
+            context.createProducer().send(context.createQueue("M1.bike-recharge"), message);
+
+            System.out.println("Vélo envoyée pour la recharge ID: " + bike.getIdBike());
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     @Override
     public Bike nextBikeAvailableByPosition(BikeRequest bikeRequest) {
-        List<Bike> availableBikes = bikeDAO.findAllAvailable();
-        Bike closestBike = null;
-        double closestDistance = Double.MAX_VALUE;
-
-        for (Bike bike : availableBikes) {
-            if (!bike.isBooked()) {
-                double distance = calculateDistance(bikeRequest.positionX(), bikeRequest.positionY(),
-                        bike.getPositionX(), bike.getPositionY());
-
-                if (distance < closestDistance) {
-                    closestBike = bike;
-                    closestDistance = distance;
-                }
-            }
-        }
-        return closestBike;
+        return bikeService.nextBikeAvailableByPosition(bikeRequest);
     }
-
 
     @Override
     public Bike getABikeById(int idBike) {
-        Bike bike = bikeDAO.findById(idBike);
-        if (bike != null) {
-            return bike;
-        } else {
-            return null;
-        }
+       return bikeService.getABikeById(idBike);
     }
 
     @Override
     public boolean bookBikeById(int bikeId) {
-        Bike bike = bikeDAO.findById(bikeId);
-        bike.setBooked(true);
-        bikeDAO.merge(bike);
-        return true;
+        return bikeService.bookBikeById(bikeId);
     }
 
-    private double calculateDistance(double x1, double y1, double x2, double y2) {
-        return Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
+    @Override
+    public boolean dropABike(Bike bike) {
+        return bikeService.dropABike(bike);
     }
 
+    @Override
+    public boolean setInCharge(Bike bike) {
+        return bikeService.setInCharge(bike);
+    }
+
+    @Override
+    public boolean isCharged(Bike bike) {
+        return bikeService.isCharged(bike);
+    }
 }
