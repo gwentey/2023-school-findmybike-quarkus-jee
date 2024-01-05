@@ -26,6 +26,22 @@ public class UserResource {
     @Inject
     UserDAOImpl userDAO;
 
+    @Path("bike/available/{positionX}/{positionY}")
+    @Produces(MediaType.APPLICATION_JSON)
+    @GET
+    public Response bikeAvailable(@PathParam("positionX") double positionX, @PathParam("positionY") double positionY) {
+        try {
+            Bike b = userService.nextBikeAvailableByPosition(positionX, positionY);
+            if (b != null) {
+                return Response.ok(b).build();
+            } else {
+                return Response.status(Response.Status.NOT_FOUND).entity("Aucun vélo disponible").build();
+            }
+        } catch (Exception e) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Erreur interne du serveur").build();
+        }
+    }
+
     @Path("bike/{bikeId}")
     @Produces(MediaType.APPLICATION_JSON)
     @POST
@@ -85,21 +101,6 @@ public class UserResource {
         }
     }
 
-    @Path("bike/available/{positionX}/{positionY}")
-    @Produces(MediaType.APPLICATION_JSON)
-    @GET
-    public Response bikeAvailable(@PathParam("positionX") double positionX, @PathParam("positionY") double positionY) {
-        try {
-            Bike b = userService.nextBikeAvailableByPosition(positionX, positionY);
-            if (b != null) {
-                return Response.ok(b).build();
-            } else {
-                return Response.status(Response.Status.NOT_FOUND).entity("Aucun vélo disponible").build();
-            }
-        } catch (Exception e) {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Erreur interne du serveur").build();
-        }
-    }
 
 
 

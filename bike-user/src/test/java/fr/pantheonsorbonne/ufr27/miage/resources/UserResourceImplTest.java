@@ -4,6 +4,7 @@ import fr.pantheonsorbonne.ufr27.miage.camel.BikeGatewayImpl;
 import fr.pantheonsorbonne.ufr27.miage.model.Bike;
 import io.quarkus.test.InjectMock;
 import io.quarkus.test.junit.QuarkusTest;
+import io.restassured.specification.RequestSpecification;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -19,8 +20,20 @@ import static org.mockito.Mockito.lenient;
 class UserResourceImplTest {
 	@InjectMock
 	BikeGatewayImpl bikeGateway;
+
+	private RequestSpecification requestSpecification;
+
 	@BeforeEach
 	public void setup() {
+
+		requestSpecification = given()
+				.auth().basic("anthony", "anthonypass");
+
+	}
+
+
+	@Test
+	void testBikeAvailableEndpoint() {
 
 		Bike expectedBike = new Bike();
 		expectedBike.setIdBike(1);
@@ -31,12 +44,7 @@ class UserResourceImplTest {
 
 		lenient().when(bikeGateway.nextBikeAvailableByPosition(2.29435, 48.858844)).thenReturn(expectedBike);
 
-	}
-
-	@Test
-	void testBikeAvailableEndpoint() {
-		given()
-				.auth().basic("anthony", "anthonypass")
+		requestSpecification
 				.when().get("/user/bike/available/2.29435/48.858844")
 				.then()
 				.statusCode(200)
@@ -46,4 +54,29 @@ class UserResourceImplTest {
 				.body("batterie", equalTo(100))
 				.body("managerId", equalTo(1));
 	}
+
+	@Test
+	void testGetABikeByIdEndpoint() {
+
+		Bike expectedBike = new Bike();
+		expectedBike.setIdBike(1);
+		expectedBike.setPositionX(2.29435);
+		expectedBike.setPositionY(48.858844);
+		expectedBike.setBatterie(100);
+		expectedBike.setManagerId(1);
+
+		lenient().when(bikeGateway.getABikeById(1)).thenReturn(expectedBike);
+
+		requestSpecification
+				.when().get("/user/bike/1")
+				.then()
+				.statusCode(200)
+				.body("idBike", equalTo(1))
+				.body("positionX", equalTo(2.29435F))
+				.body("positionY", equalTo(48.858844F))
+				.body("batterie", equalTo(100))
+				.body("managerId", equalTo(1));
+	}
+
+
 }
