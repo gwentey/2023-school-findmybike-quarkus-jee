@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import org.hibernate.annotations.ColumnDefault;
 
-
 @Entity
 public class Bike {
 	@Id
@@ -31,6 +30,10 @@ public class Bike {
 	@Column(name = "inCharge", nullable = false)
 	@ColumnDefault("false")
 	private Boolean inCharge;
+
+	@ManyToOne
+	@JoinColumn(name = "zone_id", referencedColumnName = "id", nullable = true)
+	private Zone zone;
 
 	public int getIdBike() {
 		return idBike;
@@ -94,5 +97,13 @@ public class Bike {
 
 	public void setInCharge(Boolean inCharge) {
 		this.inCharge = inCharge;
+	}
+
+	public Zone getZone() {
+		return zone;
+	}
+
+	public void setZone(Zone zone) {
+		this.zone = zone;
 	}
 }

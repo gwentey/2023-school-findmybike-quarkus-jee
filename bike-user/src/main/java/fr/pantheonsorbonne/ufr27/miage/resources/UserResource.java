@@ -83,8 +83,6 @@ public class UserResource {
     }
 
 
-
-
     @Path("bike/{bikeId}")
     @Produces(MediaType.APPLICATION_JSON)
     @GET

@@ -1,6 +1,5 @@
 package fr.pantheonsorbonne.ufr27.miage.camel;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import fr.pantheonsorbonne.ufr27.miage.model.Bike;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;

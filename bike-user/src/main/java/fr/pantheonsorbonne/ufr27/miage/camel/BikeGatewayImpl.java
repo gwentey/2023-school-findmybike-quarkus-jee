@@ -4,13 +4,11 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fr.pantheonsorbonne.ufr27.miage.dto.BikeRequest;
 import fr.pantheonsorbonne.ufr27.miage.model.Bike;
-import io.quarkus.logging.Log;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.jms.*;
 
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.util.UUID;
 
 @ApplicationScoped
