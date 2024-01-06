@@ -6,11 +6,8 @@ import fr.pantheonsorbonne.ufr27.miage.dao.ZoneDAO;
 import fr.pantheonsorbonne.ufr27.miage.dto.BikeRequest;
 import fr.pantheonsorbonne.ufr27.miage.model.Bike;
 import fr.pantheonsorbonne.ufr27.miage.model.Zone;
-import io.quarkus.logging.Log;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
 
 import java.util.List;
 
