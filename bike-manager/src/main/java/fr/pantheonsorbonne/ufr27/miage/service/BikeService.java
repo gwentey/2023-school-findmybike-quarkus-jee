@@ -12,6 +12,8 @@ public interface BikeService {
 	boolean setInCharge(Bike b);
 	boolean isCharged(Bike b);
 	Zone findZoneForBike(Bike bike);
+	Zone findNearestZone(Bike bike);
+
 
 
 	}

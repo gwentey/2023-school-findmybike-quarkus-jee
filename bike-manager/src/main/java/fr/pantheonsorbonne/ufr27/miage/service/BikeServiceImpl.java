@@ -83,7 +83,7 @@ public class BikeServiceImpl implements BikeService {
 
 		if (b != null) {
 			this.findZoneForBike(bike);
-
+			this.findNearestZone(bike);
 			b.setBatterie(bike.getBatterie());
 			b.setPositionX(bike.getPositionX());
 			b.setPositionY(bike.getPositionY());
@@ -122,6 +122,38 @@ public class BikeServiceImpl implements BikeService {
 		}
 		return closestBike;
 	}
+
+	@Override
+	public Zone findNearestZone(Bike bike) {
+		List<Zone> allZones = zoneDAO.findAllZones();
+		Zone nearestZone = null;
+		double nearestDistance = Double.MAX_VALUE;
+
+		for (Zone zone : allZones) {
+			double centerX = (zone.getLongitudePoint1() + zone.getLongitudePoint2() +
+					zone.getLongitudePoint3() + zone.getLongitudePoint4()) / 4;
+			double centerY = (zone.getLatitudePoint1() + zone.getLatitudePoint2() +
+					zone.getLatitudePoint3() + zone.getLatitudePoint4()) / 4;
+
+			double distance = calculateDistance(bike.getPositionX(), bike.getPositionY(), centerX, centerY);
+			if (distance < nearestDistance) {
+				nearestZone = zone;
+				nearestDistance = distance;
+			}
+		}
+
+		if (nearestZone != null) {
+			System.out.println("La zone la plus proche: " + nearestZone.getId() +
+					" | Position du vélo: " + bike.getPositionX() + " " + bike.getPositionY());
+		} else {
+			System.out.println("Aucune zone trouvée proche du vélo.");
+		}
+		return nearestZone;
+	}
+
+
+
+
 
 	@Override
 	public Zone findZoneForBike(Bike b) {
