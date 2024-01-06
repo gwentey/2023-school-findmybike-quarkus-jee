@@ -20,9 +20,6 @@ public class CamelRoutes extends RouteBuilder {
     @Inject
     BikeGateway bikeHandler;
 
-    @Inject
-    ObjectMapper objectMapper;
-
     @Override
     public void configure() throws Exception {
 
@@ -40,9 +37,6 @@ public class CamelRoutes extends RouteBuilder {
 
                     bikeHandler.simulerBikeCharging(bike);
                 });
-
-
-
 
     }
 
