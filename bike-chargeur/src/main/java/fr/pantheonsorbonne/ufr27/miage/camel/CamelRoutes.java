@@ -1,6 +1,5 @@
 package fr.pantheonsorbonne.ufr27.miage.camel;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import fr.pantheonsorbonne.ufr27.miage.model.Bike;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
@@ -20,9 +19,6 @@ public class CamelRoutes extends RouteBuilder {
     @Inject
     BikeGateway bikeHandler;
 
-    @Inject
-    ObjectMapper objectMapper;
-
     @Override
     public void configure() throws Exception {
 
@@ -40,9 +36,6 @@ public class CamelRoutes extends RouteBuilder {
 
                     bikeHandler.simulerBikeCharging(bike);
                 });
-
-
-
 
     }
 

@@ -1,15 +1,9 @@
 package fr.pantheonsorbonne.ufr27.miage.camel;
 
-
-import fr.pantheonsorbonne.ufr27.miage.model.Bike;
-import fr.pantheonsorbonne.ufr27.miage.model.Booking;
-import io.quarkus.logging.Log;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.jms.*;
 import org.apache.camel.CamelContext;
-import org.apache.camel.Exchange;
-import org.apache.camel.Processor;
 import org.apache.camel.builder.RouteBuilder;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 
@@ -21,9 +15,6 @@ public class CamelRoutes extends RouteBuilder {
 
     @ConfigProperty(name = "fr.pantheonsorbonne.ufr27.miage.jmsPrefix")
     String jmsPrefix;
-
-    @Inject
-    BikeGateway bikeHandler;
 
     @Inject
     CamelContext camelContext;

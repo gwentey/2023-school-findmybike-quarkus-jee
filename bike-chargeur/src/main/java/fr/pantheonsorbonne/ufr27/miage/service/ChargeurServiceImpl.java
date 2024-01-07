@@ -10,15 +10,23 @@ import jakarta.inject.Inject;
 import java.util.List;
 
 @ApplicationScoped
-public class BikeServiceImpl implements BikeService {
+public class ChargeurServiceImpl implements ChargeurService {
 
+	private double chargeurPosX = 2.3522;
+	private double chargeurPosY = 48.8566;
 	@Inject
 	BikeGateway bikeGateway;
 	@Inject
 	ZoneDAO zoneDAO;
 
+
 	@Override
 	public void simulerBikeCharging(Bike bike) {
+
+		double distance = calculateReelDistance(chargeurPosY, chargeurPosX,
+				bike.getPositionY(), bike.getPositionX());
+		System.out.println("Distance du vélo: " + distance + " kilomètres");
+
 		bikeGateway.sendAChargeConfirmation(bike);
 		new Thread(() -> {
 			try {
@@ -40,6 +48,22 @@ public class BikeServiceImpl implements BikeService {
 			}
 		}).start();
 	}
+
+	private static final int RAYON_TERRE = 6371; // Rayon de la Terre en kilomètres
+
+	private double calculateReelDistance(double lat1, double lon1, double lat2, double lon2) {
+		double latDistance = Math.toRadians(lat2 - lat1);
+		double lonDistance = Math.toRadians(lon2 - lon1);
+
+		double a = Math.sin(latDistance / 2) * Math.sin(latDistance / 2)
+				+ Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2))
+				* Math.sin(lonDistance / 2) * Math.sin(lonDistance / 2);
+
+		double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+		return RAYON_TERRE * c; // Retourne la distance en kilomètres
+	}
+
 
 	@Override
 	public Zone findNearestZone(Bike bike) {

@@ -2,13 +2,12 @@ package fr.pantheonsorbonne.ufr27.miage.service;
 
 import fr.pantheonsorbonne.ufr27.miage.camel.BikeGateway;
 import fr.pantheonsorbonne.ufr27.miage.dao.BikeDAO;
+import fr.pantheonsorbonne.ufr27.miage.dao.ZoneDAO;
 import fr.pantheonsorbonne.ufr27.miage.dto.BikeRequest;
 import fr.pantheonsorbonne.ufr27.miage.model.Bike;
-import io.quarkus.logging.Log;
+import fr.pantheonsorbonne.ufr27.miage.model.Zone;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
 
 import java.util.List;
 
@@ -17,6 +16,8 @@ public class BikeServiceImpl implements BikeService {
 
 	@Inject
 	BikeDAO bikeDAO;
+	@Inject
+	ZoneDAO zoneDAO;
 	@Inject
 	BikeGateway bikeGateway;
 
@@ -81,6 +82,8 @@ public class BikeServiceImpl implements BikeService {
 		Bike b = bikeDAO.findById(bike.getIdBike());
 
 		if (b != null) {
+			this.findZoneForBike(bike);
+			this.findNearestZone(bike);
 			b.setBatterie(bike.getBatterie());
 			b.setPositionX(bike.getPositionX());
 			b.setPositionY(bike.getPositionY());
@@ -119,6 +122,67 @@ public class BikeServiceImpl implements BikeService {
 		}
 		return closestBike;
 	}
+
+	@Override
+	public Zone findNearestZone(Bike bike) {
+		List<Zone> allZones = zoneDAO.findAllZones();
+		Zone nearestZone = null;
+		double nearestDistance = Double.MAX_VALUE;
+
+		for (Zone zone : allZones) {
+			double centerX = (zone.getLongitudePoint1() + zone.getLongitudePoint2() +
+					zone.getLongitudePoint3() + zone.getLongitudePoint4()) / 4;
+			double centerY = (zone.getLatitudePoint1() + zone.getLatitudePoint2() +
+					zone.getLatitudePoint3() + zone.getLatitudePoint4()) / 4;
+
+			double distance = calculateDistance(bike.getPositionX(), bike.getPositionY(), centerX, centerY);
+			if (distance < nearestDistance) {
+				nearestZone = zone;
+				nearestDistance = distance;
+			}
+		}
+
+		if (nearestZone != null) {
+			System.out.println("La zone la plus proche: " + nearestZone.getId() +
+					" | Position du vélo: " + bike.getPositionX() + " " + bike.getPositionY());
+		} else {
+			System.out.println("Aucune zone trouvée proche du vélo.");
+		}
+		return nearestZone;
+	}
+
+	@Override
+	public Zone findZoneForBike(Bike b) {
+		if (b != null) {
+			List<Zone> allZones = zoneDAO.findAllZones();
+			for (Zone zone : allZones) {
+				if (isInBounds(b.getPositionX(), b.getPositionY(), zone)) {
+					System.out.println("VELO DEPOSER DANS LA ZONE :" + zone.getId());
+					return zone;
+				}
+			}
+		}
+		System.out.println("VELO DEPOSER DANS AUCUNE ZONE :");
+
+		return null;
+	}
+
+	private boolean isInBounds(double posX, double posY, Zone zone) {
+		double[] latitudes = {zone.getLatitudePoint1(), zone.getLatitudePoint2(), zone.getLatitudePoint3(), zone.getLatitudePoint4()};
+		double[] longitudes = {zone.getLongitudePoint1(), zone.getLongitudePoint2(), zone.getLongitudePoint3(), zone.getLongitudePoint4()};
+
+		int i, j;
+		boolean result = false;
+		for (i = 0, j = latitudes.length - 1; i < latitudes.length; j = i++) {
+			if ((latitudes[i] > posY) != (latitudes[j] > posY) &&
+					(posX < (longitudes[j] - longitudes[i]) * (posY - latitudes[i]) / (latitudes[j] - latitudes[i]) + longitudes[i])) {
+				result = !result;
+			}
+		}
+		System.out.println("Checking bike at (" + posX + ", " + posY + ") for zone " + zone.getId() + ": " + result);
+		return result;
+	}
+
 
 	private double calculateDistance(double x1, double y1, double x2, double y2) {
 		return Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));

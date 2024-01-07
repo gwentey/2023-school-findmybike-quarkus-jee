@@ -1,7 +1,6 @@
 package fr.pantheonsorbonne.ufr27.miage.startup;
 
-import fr.pantheonsorbonne.ufr27.miage.dao.UserDAOImpl;
-import fr.pantheonsorbonne.ufr27.miage.model.User;
+import fr.pantheonsorbonne.ufr27.miage.dao.UserDAO;
 import jakarta.enterprise.event.Observes;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
@@ -13,7 +12,7 @@ import io.quarkus.runtime.StartupEvent;
 @Singleton
 public class Startup {
 	@Inject
-	UserDAOImpl userDAO;
+	UserDAO userDAO;
 	@Transactional
 	public void loadUsers(@Observes StartupEvent evt) {
 		userDAO.add(1L,"anthony","anthonypass", "rodrigues" ,"anthony", "user");
