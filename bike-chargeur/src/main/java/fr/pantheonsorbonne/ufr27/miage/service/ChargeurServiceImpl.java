@@ -11,7 +11,7 @@ import java.util.List;
 
 @ApplicationScoped
 public class ChargeurServiceImpl implements ChargeurService {
-
+//test
 	private double chargeurPosX = 2.3522;
 	private double chargeurPosY = 48.8566;
 	@Inject
