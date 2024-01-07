@@ -11,13 +11,14 @@ import java.util.List;
 
 @ApplicationScoped
 public class ChargeurServiceImpl implements ChargeurService {
-//test
-	private double chargeurPosX = 2.3522;
-	private double chargeurPosY = 48.8566;
+
 	@Inject
 	BikeGateway bikeGateway;
 	@Inject
 	ZoneDAO zoneDAO;
+	private double chargeurPosX = 2.3522;
+	private double chargeurPosY = 48.8566;
+	private static final int RAYON_TERRE = 6371;
 
 
 	@Override
@@ -49,8 +50,6 @@ public class ChargeurServiceImpl implements ChargeurService {
 		}).start();
 	}
 
-	private static final int RAYON_TERRE = 6371; // Rayon de la Terre en kilomètres
-
 	private double calculateReelDistance(double lat1, double lon1, double lat2, double lon2) {
 		double latDistance = Math.toRadians(lat2 - lat1);
 		double lonDistance = Math.toRadians(lon2 - lon1);
@@ -61,7 +60,7 @@ public class ChargeurServiceImpl implements ChargeurService {
 
 		double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 
-		return RAYON_TERRE * c; // Retourne la distance en kilomètres
+		return RAYON_TERRE * c;
 	}
 
 

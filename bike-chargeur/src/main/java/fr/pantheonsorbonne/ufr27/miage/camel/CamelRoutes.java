@@ -17,7 +17,7 @@ public class CamelRoutes extends RouteBuilder {
     @Inject
     CamelContext camelContext;
     @Inject
-    BikeGateway bikeHandler;
+    ChargeurGateway chargeurHandler;
 
     @Override
     public void configure() throws Exception {
@@ -34,7 +34,7 @@ public class CamelRoutes extends RouteBuilder {
                 .process(exchange -> {
                     Bike bike = exchange.getIn().getBody(Bike.class);
 
-                    bikeHandler.simulerBikeCharging(bike);
+                    chargeurHandler.chargerBike(bike);
                 });
 
     }

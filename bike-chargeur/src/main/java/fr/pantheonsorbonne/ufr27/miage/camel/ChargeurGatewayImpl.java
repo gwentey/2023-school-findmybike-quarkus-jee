@@ -2,9 +2,7 @@ package fr.pantheonsorbonne.ufr27.miage.camel;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fr.pantheonsorbonne.ufr27.miage.model.Bike;
-import fr.pantheonsorbonne.ufr27.miage.service.BikeService;
 import fr.pantheonsorbonne.ufr27.miage.service.ChargeurService;
-import fr.pantheonsorbonne.ufr27.miage.service.ChargeurServiceImpl;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.jms.ConnectionFactory;
@@ -14,7 +12,7 @@ import jakarta.jms.TextMessage;
 import java.io.IOException;
 
 @ApplicationScoped
-public class BikeGatewayImpl implements BikeGateway {
+public class ChargeurGatewayImpl implements ChargeurGateway {
 
     @Inject
     ConnectionFactory connectionFactory;
@@ -22,12 +20,10 @@ public class BikeGatewayImpl implements BikeGateway {
     @Inject
     ObjectMapper objectMapper;
     @Inject
-    BikeService bikeService;
-    @Inject
     ChargeurService chargeurService;
 
     @Override
-    public void simulerBikeCharging(Bike bike) {
+    public void chargerBike(Bike bike) {
         chargeurService.simulerBikeCharging(bike);
     }
 
