@@ -101,6 +101,11 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
+	public String genererUneUrlMaps(Bike bike) {
+		return "https://www.google.fr/maps/dir/" + bike.getPositionY() + "," + bike.getPositionX();
+	}
+
+	@Override
 	public Bike getABikeById(int idBike) {
 		Bike b = bikeGateway.getABikeById(idBike);
 		return b;	}

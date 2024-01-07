@@ -29,14 +29,19 @@ public class UserResource {
     @Inject
     UserDAO userDAO;
 
-    @Path("bike/available/{positionX}/{positionY}")
+    @Path("bike/available")
     @Produces(MediaType.APPLICATION_JSON)
     @GET
-    public Response bikeAvailable(@PathParam("positionX") double positionX, @PathParam("positionY") double positionY) {
+    public Response bikeAvailable(@QueryParam("positionX") double positionX, @QueryParam("positionY") double positionY) {
         try {
             Bike b = userService.nextBikeAvailableByPosition(positionX, positionY);
             if (b != null) {
-                return Response.ok(b).build();
+                String itineraireUrl = userService.genererItineraireUrl(positionX, positionY, b);
+                Map<String, Object> response = new HashMap<>();
+                response.put("bike", b);
+                response.put("itineraireUrl", itineraireUrl);
+
+                return Response.ok(response).build();
             } else {
                 return Response.status(Response.Status.NOT_FOUND).entity("Aucun vélo disponible").build();
             }
@@ -52,7 +57,6 @@ public class UserResource {
                               @QueryParam("positionX") double userPosX,
                               @QueryParam("positionY") double userPosY) {
         try {
-            System.out.println("ZZ" + userPosX);
             String username = securityContext.getUserPrincipal().getName();
             User user = userDAO.findByUsername(username);
 
@@ -93,7 +97,6 @@ public class UserResource {
 
     }
 
-
     @Path("bike/{bikeId}")
     @Produces(MediaType.APPLICATION_JSON)
     @GET
@@ -101,7 +104,12 @@ public class UserResource {
         try {
             Bike b = userService.getABikeById(bikeId);
             if (b != null) {
-                return Response.ok(b).build();
+                String mapsUrl = userService.genererUneUrlMaps(b);
+                Map<String, Object> response = new HashMap<>();
+                response.put("bike", b);
+                response.put("mapsUrl", mapsUrl);
+
+                return Response.ok(response).build();
             } else {
                 return Response.status(Response.Status.NOT_FOUND).entity("Aucun vélo disponible pour cet id").build();
             }
@@ -109,8 +117,5 @@ public class UserResource {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Erreur interne du serveur").build();
         }
     }
-
-
-
 
 }
