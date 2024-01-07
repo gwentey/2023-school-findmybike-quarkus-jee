@@ -1,54 +1,126 @@
 package fr.pantheonsorbonne.ufr27.miage.service;
 
-import fr.pantheonsorbonne.ufr27.miage.camel.BikeGateway;
+import fr.pantheonsorbonne.ufr27.miage.camel.ChargeurGateway;
 import fr.pantheonsorbonne.ufr27.miage.dao.ZoneDAO;
 import fr.pantheonsorbonne.ufr27.miage.model.Bike;
 import fr.pantheonsorbonne.ufr27.miage.model.Zone;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 
-import java.util.List;
+import java.util.*;
 
 @ApplicationScoped
 public class ChargeurServiceImpl implements ChargeurService {
 
 	@Inject
-	BikeGateway bikeGateway;
+	ChargeurGateway chargeurGateway;
 	@Inject
 	ZoneDAO zoneDAO;
 	private double chargeurPosX = 2.3522;
 	private double chargeurPosY = 48.8566;
 	private static final int RAYON_TERRE = 6371;
+	private static final int MAX_BIKES_EN_CHARGE = 3;
 
+	private final Queue<Bike> queueChargement = new PriorityQueue<>(
+			Comparator.comparingDouble(b -> calculateReelDistance(chargeurPosY, chargeurPosX, b.getPositionY(), b.getPositionX()))
+	);
+	private final List<Bike> bikesEnCharge = new ArrayList<>();
 
 	@Override
-	public void simulerBikeCharging(Bike bike) {
+	public synchronized void chargerBike(Bike bike) {
+		queueChargement.add(bike);
+		if (bikesEnCharge.size() < MAX_BIKES_EN_CHARGE) {
+			Bike bikeACharger = queueChargement.poll();
+			if (bikeACharger != null) {
+				Thread chargeurThread = new Thread(() -> gererChargeur(bikeACharger));
+				chargeurThread.start();
+			}
+		}
+	}
 
-		double distance = calculateReelDistance(chargeurPosY, chargeurPosX,
-				bike.getPositionY(), bike.getPositionX());
+	private void gererChargeur(Bike bike) {
+		seDeplacerVersBike(bike);
+		chargerLeBike(bike);
+		Zone zoneLaPlusProche = findNearestZone(bike);
+		seDeplacerVersZoneAvecBike(zoneLaPlusProche, bike);
+		bikesEnCharge.remove(bike);
+		chargeurGateway.sendAChargeEnd(bike);
+	}
+
+	@Override
+	public void priseEnChargeBike(Bike bike) {
+		chargeurGateway.sendAChargeConfirmation(bike);
+		seDeplacerVersBike(bike);
+		chargerLeBike(bike);
+		Zone zoneLaPlusProche = findNearestZone(bike);
+		seDeplacerVersZoneAvecBike(zoneLaPlusProche, bike);
+		chargeurGateway.sendAChargeEnd(bike);
+	}
+
+	private void seDeplacerVersBike(Bike bike) {
+		double distance = calculateReelDistance(chargeurPosY, chargeurPosX, bike.getPositionY(), bike.getPositionX());
 		System.out.println("Distance du vélo: " + distance + " kilomètres");
 
-		bikeGateway.sendAChargeConfirmation(bike);
-		new Thread(() -> {
+		final double vitesseChargeur = 0.4; // 0.4 km/s
+
+		double distanceRestante = distance;
+		while (distanceRestante > 0) {
 			try {
-				int initialBatteryLevel = bike.getBatterie();
-				int remainingCharge = 100 - initialBatteryLevel;
-				int secondsToFullCharge = remainingCharge / 2;
-
-				for (int i = 0; i < secondsToFullCharge; i++) {
-					Thread.sleep(1000);
-					int currentCharge = initialBatteryLevel + (i + 1) * 2;
-					System.out.println("Vélo ID: " + bike.getIdBike() + " - " + currentCharge + "% chargé");
-				}
-				bike.setBatterie(100);
-
-				System.out.println("Chargement terminé pour le vélo ID: " + bike.getIdBike());
-				bikeGateway.sendAChargeEnd(bike);
+				Thread.sleep(1000); // Pause de 1 seconde
+				distanceRestante -= vitesseChargeur;
+				System.out.println("Déplacement du chargeur vers le vélo " + bike.getIdBike() +  "... Distance restante: " + Math.max(distanceRestante, 0) + " km");
 			} catch (InterruptedException e) {
 				Thread.currentThread().interrupt();
+				return;
 			}
-		}).start();
+		}
+
+		System.out.println("Le chargeur est arrivé à la position du vélo.");
 	}
+
+	public void chargerLeBike(Bike bike) {
+		int initialBatteryLevel = bike.getBatterie();
+		int remainingCharge = 100 - initialBatteryLevel;
+		int secondsToFullCharge = remainingCharge / 2;
+
+		for (int i = 0; i < secondsToFullCharge; i++) {
+			try {
+				Thread.sleep(1000);
+				int currentCharge = initialBatteryLevel + (i + 1) * 2;
+				System.out.println("Vélo ID: " + bike.getIdBike() + " - " + currentCharge + "% chargé");
+			} catch (InterruptedException e) {
+				Thread.currentThread().interrupt();
+				return;
+			}
+		}
+
+		bike.setBatterie(100);
+		System.out.println("Chargement terminé pour le vélo ID: " + bike.getIdBike());
+	}
+
+	private void seDeplacerVersZoneAvecBike(Zone zone, Bike bike) {
+		if (zone != null) {
+			double distance = calculateReelDistance(zone.getLatitudePoint1(), zone.getLongitudePoint1(), bike.getPositionY(), bike.getPositionX());
+			System.out.println("Distance de la zone: " + distance + " kilomètres avec le vélo");
+
+			final double vitesseChargeur = 0.4; // 0.4 km/s
+
+			double distanceRestante = distance;
+			while (distanceRestante > 0) {
+				try {
+					Thread.sleep(1000);
+					distanceRestante -= vitesseChargeur;
+					System.out.println("Déplacement du chargeur vers la zone " + zone.getId() + " ... Distance restante: " + Math.max(distanceRestante, 0) + " km");
+				} catch (InterruptedException e) {
+					Thread.currentThread().interrupt();
+					return;
+				}
+			}
+
+			System.out.println("Le chargeur est arrivé à la zone avec le vélo.");
+		}
+	}
+
 
 	private double calculateReelDistance(double lat1, double lon1, double lat2, double lon2) {
 		double latDistance = Math.toRadians(lat2 - lat1);
@@ -77,10 +149,14 @@ public class ChargeurServiceImpl implements ChargeurService {
 					zone.getLatitudePoint3() + zone.getLatitudePoint4()) / 4;
 
 			double distance = calculateDistance(bike.getPositionX(), bike.getPositionY(), centerX, centerY);
+
+			System.out.println("Bike numero " + bike.getIdBike() + " distance entre zone numero " + zone.getId() + " : " + distance + " km");
+
 			if (distance < nearestDistance) {
 				nearestZone = zone;
 				nearestDistance = distance;
 			}
+
 		}
 
 		if (nearestZone != null) {

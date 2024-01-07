@@ -16,7 +16,6 @@ public class ChargeurGatewayImpl implements ChargeurGateway {
 
     @Inject
     ConnectionFactory connectionFactory;
-
     @Inject
     ObjectMapper objectMapper;
     @Inject
@@ -24,7 +23,7 @@ public class ChargeurGatewayImpl implements ChargeurGateway {
 
     @Override
     public void chargerBike(Bike bike) {
-        chargeurService.simulerBikeCharging(bike);
+        chargeurService.priseEnChargeBike(bike);
     }
 
     /**
