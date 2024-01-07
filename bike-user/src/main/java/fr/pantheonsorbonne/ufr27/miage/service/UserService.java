@@ -11,6 +11,7 @@ public interface UserService {
 
 	Bike nextBikeAvailableByPosition(Double positionX, Double positionY);
 	void returnBike(long userId, Bike bike);
+	String genererItineraireUrl(double userPosX, double userPosY, Bike bike);
+	String genererUneUrlMaps(Bike bike);
 
-
-	}
+}

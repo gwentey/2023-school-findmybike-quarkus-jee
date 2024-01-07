@@ -23,6 +23,8 @@ public class UserServiceImpl implements UserService {
 	UserDAO userDAO;
 	@Inject
 	BikeDAOImpl bikeDAO;
+	private static final int RAYON_TERRE = 6371;
+
 
 
 	@Override
@@ -89,6 +91,18 @@ public class UserServiceImpl implements UserService {
 			Log.info("Vélo " + returnedBike.getIdBike() + " retourné !");
 		}
 
+	}
+
+	@Override
+	public String genererItineraireUrl(double userPosX, double userPosY, Bike bike) {
+		return "https://www.google.fr/maps/dir/" + userPosY + "," + userPosX + "/" +
+				bike.getPositionY() + "," + bike.getPositionX() +
+				"/data=!3m1!4b1!4m2!4m1!3e2?entry=ttu";
+	}
+
+	@Override
+	public String genererUneUrlMaps(Bike bike) {
+		return "https://www.google.fr/maps/dir/" + bike.getPositionY() + "," + bike.getPositionX();
 	}
 
 	@Override

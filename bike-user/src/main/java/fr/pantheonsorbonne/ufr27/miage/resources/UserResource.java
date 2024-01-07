@@ -1,10 +1,10 @@
 package fr.pantheonsorbonne.ufr27.miage.resources;
 
-import fr.pantheonsorbonne.ufr27.miage.dao.UserDAOImpl;
+import fr.pantheonsorbonne.ufr27.miage.dao.UserDAO;
 import fr.pantheonsorbonne.ufr27.miage.model.Bike;
 import fr.pantheonsorbonne.ufr27.miage.model.Booking;
 import fr.pantheonsorbonne.ufr27.miage.model.User;
-import fr.pantheonsorbonne.ufr27.miage.service.UserServiceImpl;
+import fr.pantheonsorbonne.ufr27.miage.service.UserService;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
@@ -12,6 +12,9 @@ import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.SecurityContext;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @Path("user")
 @RolesAllowed("user")
@@ -21,19 +24,24 @@ public class UserResource {
     SecurityContext securityContext;
 
     @Inject
-    UserServiceImpl userService;
+    UserService userService;
 
     @Inject
-    UserDAOImpl userDAO;
+    UserDAO userDAO;
 
-    @Path("bike/available/{positionX}/{positionY}")
+    @Path("bike/available")
     @Produces(MediaType.APPLICATION_JSON)
     @GET
-    public Response bikeAvailable(@PathParam("positionX") double positionX, @PathParam("positionY") double positionY) {
+    public Response bikeAvailable(@QueryParam("positionX") double positionX, @QueryParam("positionY") double positionY) {
         try {
             Bike b = userService.nextBikeAvailableByPosition(positionX, positionY);
             if (b != null) {
-                return Response.ok(b).build();
+                String itineraireUrl = userService.genererItineraireUrl(positionX, positionY, b);
+                Map<String, Object> response = new HashMap<>();
+                response.put("bike", b);
+                response.put("itineraireUrl", itineraireUrl);
+
+                return Response.ok(response).build();
             } else {
                 return Response.status(Response.Status.NOT_FOUND).entity("Aucun vélo disponible").build();
             }
@@ -42,10 +50,12 @@ public class UserResource {
         }
     }
 
-    @Path("bike/{bikeId}")
+    @Path("bike/{bikeId}/")
     @Produces(MediaType.APPLICATION_JSON)
     @POST
-    public Response bookABike(@PathParam("bikeId") int bikeId) {
+    public Response bookABike(@PathParam("bikeId") int bikeId,
+                              @QueryParam("positionX") double userPosX,
+                              @QueryParam("positionY") double userPosY) {
         try {
             String username = securityContext.getUserPrincipal().getName();
             User user = userDAO.findByUsername(username);
@@ -53,7 +63,12 @@ public class UserResource {
             Booking booking = userService.bookABike(user.id, bikeId);
 
             if (booking != null) {
-                return Response.ok(booking).build();
+                String itineraireUrl = userService.genererItineraireUrl(userPosX, userPosY, booking.getBike());
+                Map<String, Object> response = new HashMap<>();
+                response.put("booking", booking);
+                response.put("itineraire", itineraireUrl);
+
+                return Response.ok(response).build();
             } else {
                 return Response.status(Response.Status.NOT_FOUND).entity("Réservation de vélo échouée").build();
             }
@@ -82,7 +97,6 @@ public class UserResource {
 
     }
 
-
     @Path("bike/{bikeId}")
     @Produces(MediaType.APPLICATION_JSON)
     @GET
@@ -90,7 +104,12 @@ public class UserResource {
         try {
             Bike b = userService.getABikeById(bikeId);
             if (b != null) {
-                return Response.ok(b).build();
+                String mapsUrl = userService.genererUneUrlMaps(b);
+                Map<String, Object> response = new HashMap<>();
+                response.put("bike", b);
+                response.put("mapsUrl", mapsUrl);
+
+                return Response.ok(response).build();
             } else {
                 return Response.status(Response.Status.NOT_FOUND).entity("Aucun vélo disponible pour cet id").build();
             }
@@ -98,8 +117,5 @@ public class UserResource {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Erreur interne du serveur").build();
         }
     }
-
-
-
 
 }
