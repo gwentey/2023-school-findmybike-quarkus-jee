@@ -23,9 +23,6 @@ public class UserServiceImpl implements UserService {
 	UserDAO userDAO;
 	@Inject
 	BikeDAOImpl bikeDAO;
-	private static final int RAYON_TERRE = 6371;
-
-
 
 	@Override
 	public Booking bookABike(long userId, int bikeId) {
