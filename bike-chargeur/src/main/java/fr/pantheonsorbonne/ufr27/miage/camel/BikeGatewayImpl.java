@@ -3,6 +3,8 @@ package fr.pantheonsorbonne.ufr27.miage.camel;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fr.pantheonsorbonne.ufr27.miage.model.Bike;
 import fr.pantheonsorbonne.ufr27.miage.service.BikeService;
+import fr.pantheonsorbonne.ufr27.miage.service.ChargeurService;
+import fr.pantheonsorbonne.ufr27.miage.service.ChargeurServiceImpl;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.jms.ConnectionFactory;
@@ -21,11 +23,12 @@ public class BikeGatewayImpl implements BikeGateway {
     ObjectMapper objectMapper;
     @Inject
     BikeService bikeService;
-
+    @Inject
+    ChargeurService chargeurService;
 
     @Override
     public void simulerBikeCharging(Bike bike) {
-        bikeService.simulerBikeCharging(bike);
+        chargeurService.simulerBikeCharging(bike);
     }
 
     /**

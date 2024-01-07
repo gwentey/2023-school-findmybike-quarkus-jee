@@ -151,10 +151,6 @@ public class BikeServiceImpl implements BikeService {
 		return nearestZone;
 	}
 
-
-
-
-
 	@Override
 	public Zone findZoneForBike(Bike b) {
 		if (b != null) {
