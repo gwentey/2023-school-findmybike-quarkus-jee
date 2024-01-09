@@ -30,6 +30,8 @@ public class User {
 	@Roles
 	public String role;
 
+
+
 	public String getNom() {
 		return nom;
 	}
