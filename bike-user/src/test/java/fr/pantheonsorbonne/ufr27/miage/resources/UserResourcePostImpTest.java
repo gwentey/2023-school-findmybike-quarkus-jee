@@ -4,6 +4,7 @@ import fr.pantheonsorbonne.ufr27.miage.camel.BikeGatewayImpl;
 import fr.pantheonsorbonne.ufr27.miage.dao.BikeDAO;
 import fr.pantheonsorbonne.ufr27.miage.dao.BookingDAO;
 import fr.pantheonsorbonne.ufr27.miage.dao.UserDAO;
+import fr.pantheonsorbonne.ufr27.miage.exception.BikeAlreadyBookedException;
 import fr.pantheonsorbonne.ufr27.miage.model.Bike;
 import fr.pantheonsorbonne.ufr27.miage.model.Booking;
 import fr.pantheonsorbonne.ufr27.miage.model.User;
@@ -46,7 +47,7 @@ class UserResourcePostImpTest {
 	}
 
 	@Test
-	void testBookABikeEndpoint() {
+	void testBookABikeEndpoint() throws BikeAlreadyBookedException {
 		// Simulez les données de retour pour userDAO et userService
 		User mockUser = new User();
 		mockUser.setId(1L); // Assurez-vous que l'ID correspond à celui utilisé dans le test

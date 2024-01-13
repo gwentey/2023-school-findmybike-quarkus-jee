@@ -4,6 +4,7 @@ import fr.pantheonsorbonne.ufr27.miage.camel.BikeGatewayImpl;
 import fr.pantheonsorbonne.ufr27.miage.dao.BikeDAOImpl;
 import fr.pantheonsorbonne.ufr27.miage.dao.BookingDAO;
 import fr.pantheonsorbonne.ufr27.miage.dao.UserDAO;
+import fr.pantheonsorbonne.ufr27.miage.exception.*;
 import fr.pantheonsorbonne.ufr27.miage.model.Bike;
 import fr.pantheonsorbonne.ufr27.miage.model.Booking;
 import fr.pantheonsorbonne.ufr27.miage.model.User;
@@ -25,14 +26,14 @@ public class UserServiceImpl implements UserService {
 	BikeDAOImpl bikeDAO;
 
 	@Override
-	public Booking bookABike(long userId, int bikeId) {
+	public Booking bookABike(long userId, int bikeId) throws BikeAlreadyBookedException {
 		Bike bike = getABikeById(bikeId);
 		User user = userDAO.findById(userId);
 
 		if (user != null && bike != null) {
 			boolean isBikeAlreadyBooked = bookingDAO.isBikeBooked(bikeId);
 			if (isBikeAlreadyBooked) {
-				throw new RuntimeException("Le vélo est déjà réservé");
+				throw new BikeAlreadyBookedException(bikeId);
 			}
 			Bike existingBike = bikeDAO.findById(bike.getIdBike());
 			if (existingBike == null) {
@@ -51,29 +52,29 @@ public class UserServiceImpl implements UserService {
 				bookingDAO.save(booking);
 				return booking;
 			} else {
-				throw new RuntimeException("Erreur coté Manager");
+				throw new ManagerException();
 			}
 		} else {
-			throw new RuntimeException("Utilisateur ou vélo introuvable");
+			throw new UserOrBikeNotFoundException();
 		}
 	}
 
 	@Override
-	public void returnBike(long userId, Bike bike) {
+	public void returnBike(long userId, Bike bike) throws NoBookingException.NoBookingUserIDBikeID {
 		User user = userDAO.findById(userId);
 		if (user == null) {
-			throw new RuntimeException("Utilisateur introuvable");
+			throw new NoUserFound.NoUserFoundByID((int)userId);
 		}
 
 		Bike returnedBike = bikeDAO.findById(bike.getIdBike());
 		if (returnedBike == null) {
-			throw new RuntimeException("Vélo introuvable");
+			throw new NoBikeFound.NoBikeFoundByID(bike.getIdBike());
 		}
 
 		// Vérification si l'utilisateur a une réservation pour ce vélo
 		Booking booking = bookingDAO.findBookingByUserIdAndBikeId(userId, returnedBike.getIdBike());
 		if (booking == null) {
-			throw new RuntimeException("Aucune réservation trouvée pour cet utilisateur et ce vélo");
+			throw new NoBookingException.NoBookingUserIDBikeID((int)userId,returnedBike.getIdBike());
 		} else {
 			bookingDAO.deleteBookingByUserIdAndBikeId(userId, returnedBike.getIdBike());
 

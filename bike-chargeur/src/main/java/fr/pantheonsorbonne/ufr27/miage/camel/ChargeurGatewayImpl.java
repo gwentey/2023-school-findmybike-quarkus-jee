@@ -1,6 +1,7 @@
 package fr.pantheonsorbonne.ufr27.miage.camel;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import fr.pantheonsorbonne.ufr27.miage.exception.ChargeValidationNotSentException;
 import fr.pantheonsorbonne.ufr27.miage.model.Bike;
 import fr.pantheonsorbonne.ufr27.miage.service.ChargeurService;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -43,7 +44,7 @@ public class ChargeurGatewayImpl implements ChargeurGateway {
             System.out.println("La validation a été envoyé pour la recharge ID: " + bike.getIdBike());
 
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new ChargeValidationNotSentException("La validation n'a pas été envoyée pour la recharge ID: " + bike.getIdBike(),e);
         }
     }
 
@@ -64,7 +65,7 @@ public class ChargeurGatewayImpl implements ChargeurGateway {
             System.out.println("La validation a été envoyé pour la recharge ID: " + bike.getIdBike());
 
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new ChargeValidationNotSentException("La validation n'a pas été envoyée pour la recharge ID: " + bike.getIdBike(),e);
         }
     }
 
