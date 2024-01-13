@@ -45,10 +45,10 @@ public class UserResource {
 
                 return Response.ok(response).build();
             } else {
-                return Response.status(Response.Status.NOT_FOUND).entity("Aucun vélo disponible").build();
+                return new WebApplicationException("Aucun vélo disponible", Response.Status.NOT_FOUND.getStatusCode()).getResponse();
             }
         } catch (InternalServorException e) {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Erreur interne du serveur").build();
+            return new WebApplicationException("Erreur interne du serveur", Response.Status.INTERNAL_SERVER_ERROR.getStatusCode()).getResponse();
         }
     }
 
@@ -72,12 +72,12 @@ public class UserResource {
 
                 return Response.ok(response).build();
             } else {
-                return Response.status(Response.Status.NOT_FOUND).entity("Réservation de vélo échouée").build();
+                return new WebApplicationException("Réservation de vélo échouée", Response.Status.NOT_FOUND.getStatusCode()).getResponse();
             }
-        } catch (Exception e) {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Erreur lors de la réservation: " + e.getMessage()).build();
         } catch (BikeAlreadyBookedException e) {
-            throw new RuntimeException(e);
+            return new WebApplicationException("Le vélo est déjà réservé", Response.Status.CONFLICT.getStatusCode()).getResponse();
+        } catch (Exception e) {
+            return new WebApplicationException("Erreur lors de la réservation", Response.Status.INTERNAL_SERVER_ERROR.getStatusCode()).getResponse();
         }
     }
 
@@ -94,11 +94,10 @@ public class UserResource {
 
             return Response.ok().build();
         } catch (RuntimeException e) {
-            return Response.status(Response.Status.NOT_FOUND).entity("Échec du retour du vélo: " + e.getMessage()).build();
+            return new WebApplicationException("Échec du retour du vélo: " + e.getMessage(), Response.Status.NOT_FOUND.getStatusCode()).getResponse();
         } catch (Exception e) {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Erreur lors du retour du vélo: " + e.getMessage()).build();
+            return new WebApplicationException("Erreur lors du retour du vélo", Response.Status.INTERNAL_SERVER_ERROR.getStatusCode()).getResponse();
         }
-
     }
 
     @Path("bike/{bikeId}")
@@ -115,10 +114,10 @@ public class UserResource {
 
                 return Response.ok(response).build();
             } else {
-                return Response.status(Response.Status.NOT_FOUND).entity("Aucun vélo disponible pour cet id").build();
+                return new WebApplicationException("Aucun vélo disponible pour cet id", Response.Status.NOT_FOUND.getStatusCode()).getResponse();
             }
         } catch (Exception e) {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Erreur interne du serveur").build();
+            return new WebApplicationException("Erreur interne du serveur", Response.Status.INTERNAL_SERVER_ERROR.getStatusCode()).getResponse();
         }
     }
 
