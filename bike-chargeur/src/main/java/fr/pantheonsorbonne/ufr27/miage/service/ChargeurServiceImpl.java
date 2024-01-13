@@ -2,6 +2,7 @@ package fr.pantheonsorbonne.ufr27.miage.service;
 
 import fr.pantheonsorbonne.ufr27.miage.camel.ChargeurGateway;
 import fr.pantheonsorbonne.ufr27.miage.dao.ZoneDAO;
+import fr.pantheonsorbonne.ufr27.miage.exception.ChargeInterruptedException;
 import fr.pantheonsorbonne.ufr27.miage.model.Bike;
 import fr.pantheonsorbonne.ufr27.miage.model.Zone;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -68,12 +69,17 @@ public class ChargeurServiceImpl implements ChargeurService {
 			try {
 				Thread.sleep(1000); // Pause de 1 seconde
 				distanceRestante -= vitesseChargeur;
-				System.out.println("Déplacement du chargeur vers le vélo " + bike.getIdBike() +  "... Distance restante: " + Math.max(distanceRestante, 0) + " km");
+				System.out.println("Déplacement du chargeur vers le vélo " + bike.getIdBike() + "... Distance restante: " + Math.max(distanceRestante, 0) + " km");
 			} catch (InterruptedException e) {
-				Thread.currentThread().interrupt();
-				return;
-			}
+                try {
+                    throw new ChargeInterruptedException("La charge a été interrompue");
+                } catch (ChargeInterruptedException ex) {
+					ex.printMessage();
+					Thread.currentThread().interrupt();
+					return;                }
+            }
 		}
+
 
 		System.out.println("Le chargeur est arrivé à la position du vélo.");
 	}
@@ -89,8 +95,12 @@ public class ChargeurServiceImpl implements ChargeurService {
 				int currentCharge = initialBatteryLevel + (i + 1) * 2;
 				System.out.println("Vélo ID: " + bike.getIdBike() + " - " + currentCharge + "% chargé");
 			} catch (InterruptedException e) {
-				Thread.currentThread().interrupt();
-				return;
+				try {
+					throw new ChargeInterruptedException("La charge a été interrompue");
+				} catch (ChargeInterruptedException ex) {
+					ex.printMessage();
+					Thread.currentThread().interrupt();
+					return;                }
 			}
 		}
 
@@ -112,8 +122,12 @@ public class ChargeurServiceImpl implements ChargeurService {
 					distanceRestante -= vitesseChargeur;
 					System.out.println("Déplacement du chargeur vers la zone " + zone.getId() + " ... Distance restante: " + Math.max(distanceRestante, 0) + " km");
 				} catch (InterruptedException e) {
-					Thread.currentThread().interrupt();
-					return;
+					try {
+						throw new ChargeInterruptedException("La charge a été interrompue");
+					} catch (ChargeInterruptedException ex) {
+						ex.printMessage();
+						Thread.currentThread().interrupt();
+						return;                }
 				}
 			}
 

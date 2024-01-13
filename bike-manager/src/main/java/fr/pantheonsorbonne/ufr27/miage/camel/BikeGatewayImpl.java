@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fr.pantheonsorbonne.ufr27.miage.dao.BikeDAO;
 import fr.pantheonsorbonne.ufr27.miage.dto.BikeRequest;
+import fr.pantheonsorbonne.ufr27.miage.exception.BikeNotSentException;
 import fr.pantheonsorbonne.ufr27.miage.model.Bike;
 import fr.pantheonsorbonne.ufr27.miage.service.BikeService;
 import io.quarkus.logging.Log;
@@ -47,7 +48,7 @@ public class BikeGatewayImpl implements BikeGateway {
             System.out.println("Vélo envoyée pour la recharge ID: " + bike.getIdBike());
 
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new BikeNotSentException("Le vélo ID: " + bike.getIdBike() + " n'a pas été envoyé pour recharge", e);
         }
     }
 

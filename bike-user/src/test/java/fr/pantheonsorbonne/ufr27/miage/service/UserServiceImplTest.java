@@ -4,6 +4,7 @@ import fr.pantheonsorbonne.ufr27.miage.camel.BikeGatewayImpl;
 import fr.pantheonsorbonne.ufr27.miage.dao.BikeDAOImpl;
 import fr.pantheonsorbonne.ufr27.miage.dao.BookingDAO;
 import fr.pantheonsorbonne.ufr27.miage.dao.UserDAO;
+import fr.pantheonsorbonne.ufr27.miage.exception.BikeAlreadyBookedException;
 import fr.pantheonsorbonne.ufr27.miage.model.Bike;
 import fr.pantheonsorbonne.ufr27.miage.model.Booking;
 import fr.pantheonsorbonne.ufr27.miage.model.User;
@@ -46,7 +47,7 @@ class UserServiceImplTest {
     }
 
     @Test
-    public void testBookABikeSuccess() {
+    public void testBookABikeSuccess() throws BikeAlreadyBookedException {
         long userId = 1;
         int bikeId = 8;
         User user = new User();

@@ -1,5 +1,6 @@
 package fr.pantheonsorbonne.ufr27.miage.dao;
 
+import fr.pantheonsorbonne.ufr27.miage.exception.NoBookingException;
 import fr.pantheonsorbonne.ufr27.miage.model.Booking;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.persistence.EntityManager;
@@ -31,20 +32,21 @@ public class BookingDAOImpl implements BookingDAO {
 
 	@Override
 	@Transactional
-	public Booking findBookingByUserIdAndBikeId(long userId, int bikeId) {
+	public Booking findBookingByUserIdAndBikeId(long userId, int bikeId) throws NoBookingException.NoBookingUserIDBikeID {
 		try {
 			return em.createQuery("SELECT b FROM Booking b WHERE b.user.id = :userId AND b.bike.idBike = :bikeId", Booking.class)
 					.setParameter("userId", userId)
 					.setParameter("bikeId", bikeId)
 					.getSingleResult();
-		} catch (NoResultException e) {
-			throw new RuntimeException("Aucun vélo n'est réservé par cet utilisateur");
+		} catch (NoBookingException.NoBookingUserIDBikeID e) {
+			e.printMessage();
+			throw e;
 		}
 	}
 
 	@Override
 	@Transactional
-	public void deleteBookingByUserIdAndBikeId(long userId, int bikeId) {
+	public void deleteBookingByUserIdAndBikeId(long userId, int bikeId) throws NoBookingException.NoBookingUserIDBikeID {
 		Booking booking = findBookingByUserIdAndBikeId(userId, bikeId);
 		em.remove(booking);
 	}

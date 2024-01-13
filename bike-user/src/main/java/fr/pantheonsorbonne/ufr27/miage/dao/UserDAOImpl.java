@@ -1,5 +1,7 @@
 package fr.pantheonsorbonne.ufr27.miage.dao;
 
+import fr.pantheonsorbonne.ufr27.miage.exception.NoUserFound;
+import fr.pantheonsorbonne.ufr27.miage.exception.NoUserFound.NoUserFoundByUsername;
 import fr.pantheonsorbonne.ufr27.miage.model.Bike;
 import fr.pantheonsorbonne.ufr27.miage.model.Booking;
 import fr.pantheonsorbonne.ufr27.miage.model.User;
@@ -9,6 +11,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
+import jakarta.ws.rs.core.NewCookie;
 
 import java.util.Optional;
 
@@ -25,13 +28,14 @@ public class UserDAOImpl implements UserDAO {
     }
 
     @Override
-    public User findByUsername(String username) {
+    public User findByUsername(String username) throws NoUserFound.NoUserFoundByUsername {
         try {
             return em.createQuery("SELECT u FROM User u WHERE u.username = :username", User.class)
                     .setParameter("username", username)
                     .getSingleResult();
-        } catch (NoResultException e) {
-            return null;
+        } catch (NoUserFound.NoUserFoundByUsername e) {
+            e.printMessage();
+            throw e;
         }
     }
 
