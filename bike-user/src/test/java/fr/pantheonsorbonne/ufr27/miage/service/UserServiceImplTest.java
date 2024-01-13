@@ -4,7 +4,7 @@ import fr.pantheonsorbonne.ufr27.miage.camel.BikeGatewayImpl;
 import fr.pantheonsorbonne.ufr27.miage.dao.BikeDAOImpl;
 import fr.pantheonsorbonne.ufr27.miage.dao.BookingDAO;
 import fr.pantheonsorbonne.ufr27.miage.dao.UserDAO;
-import fr.pantheonsorbonne.ufr27.miage.exception.BikeAlreadyBookedException;
+import fr.pantheonsorbonne.ufr27.miage.exception.*;
 import fr.pantheonsorbonne.ufr27.miage.model.Bike;
 import fr.pantheonsorbonne.ufr27.miage.model.Booking;
 import fr.pantheonsorbonne.ufr27.miage.model.User;
@@ -85,7 +85,7 @@ class UserServiceImplTest {
 
         when(userDAO.findById(userId)).thenReturn(null);
 
-        RuntimeException exception = assertThrows(RuntimeException.class, () -> {
+        RuntimeException exception = assertThrows(UserOrBikeNotFoundException.class, () -> {
             userService.bookABike(userId, bikeId);
         });
 
@@ -93,7 +93,41 @@ class UserServiceImplTest {
     }
 
     @Test
-    void testBookABikeBookingException() {
+    public void testBookABikeUserNotFound() {
+        long userId = 1;
+        int bikeId = 8;
+
+        when(userDAO.findById(userId)).thenReturn(null);
+
+        RuntimeException exception = assertThrows(UserOrBikeNotFoundException.class, () -> {
+            userService.bookABike(userId, bikeId);
+        });
+
+        assertEquals("Utilisateur ou vélo introuvable", exception.getMessage());
+    }
+
+    @Test
+    public void testBookABikeBikeAlreadyBooked() {
+        long userId = 1;
+        int bikeId = 8;
+        User user = new User();
+        user.setId(userId);
+        Bike bike = new Bike();
+        bike.setIdBike(bikeId);
+
+        when(userDAO.findById(userId)).thenReturn(user);
+        when(bikeGateway.getABikeById(bikeId)).thenReturn(bike);
+        when(bookingDAO.isBikeBooked(bikeId)).thenReturn(true);
+
+        BikeAlreadyBookedException exception = assertThrows(BikeAlreadyBookedException.class, () -> {
+            userService.bookABike(userId, bikeId);
+        });
+
+        assertEquals("The bike n°" + bikeId + " is already booked !", exception.getMessage());
+    }
+
+    @Test
+    void testBookABikeManagerException() throws BikeAlreadyBookedException {
         long userId = 1;
         int bikeId = 8;
         User user = new User();
@@ -105,13 +139,13 @@ class UserServiceImplTest {
         when(bikeDAO.findById(bikeId)).thenReturn(bike);
         when(bookingDAO.isBikeBooked(bikeId)).thenReturn(false);
         when(bikeGateway.getABikeById(bikeId)).thenReturn(bike);
-        when(bikeGateway.bookBikeById(bikeId)).thenThrow(new RuntimeException("Erreur côté Manager"));
+        when(bikeGateway.bookBikeById(bikeId)).thenThrow(new ManagerException());
 
-        RuntimeException exception = assertThrows(RuntimeException.class, () -> {
+        ManagerException exception = assertThrows(ManagerException.class, () -> {
             userService.bookABike(userId, bikeId);
         });
 
-        assertEquals("Erreur côté Manager", exception.getMessage());
+        assertEquals("Erreur coté Manager", exception.getMessage());
         verify(bookingDAO, never()).save(any(Booking.class));
     }
 
@@ -148,11 +182,11 @@ class UserServiceImplTest {
             userService.returnBike(userId, bike);
         });
 
-        assertEquals("Utilisateur introuvable", exception.getMessage());
+        assertEquals("No user found for the following ID : " + userId, exception.getMessage());
     }
 
     @Test
-    void testReturnBikeNoReservationFound() {
+    void testReturnBikeBookingNotFound() {
         long userId = 1;
         int bikeId = 100;
         User user = new User();
@@ -168,7 +202,7 @@ class UserServiceImplTest {
             userService.returnBike(userId, bike);
         });
 
-        assertEquals("Aucune réservation trouvée pour cet utilisateur et ce vélo", exception.getMessage());
+        assertEquals("No booking found relative to user n°" + userId + " and Bike n°" + bikeId, exception.getMessage());
         verify(bikeDAO, never()).merge(any(Bike.class));
         verify(bikeGateway, never()).returnABike(any(Bike.class));
         verify(bookingDAO, never()).deleteBookingByUserIdAndBikeId(anyLong(), anyInt());
