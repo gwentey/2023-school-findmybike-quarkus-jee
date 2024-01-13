@@ -180,28 +180,4 @@ class BikeServiceImplTest {
         verify(zoneDAO).findAllZones();
     }
 
-    /**@Test void testFindZoneForBike() {
-    Bike bike = new Bike();
-    bike.setIdBike(1);
-    bike.setPositionX(3.0);
-    bike.setPositionY(4.0);
-
-    Zone zone1 = new Zone();
-    zone1.setId(1L);
-    zone1.setLatitudePoint1(2.0);
-    zone1.setLongitudePoint1(3.0);
-    zone1.setLatitudePoint2(4.0);
-    zone1.setLongitudePoint2(5.0);
-    zone1.setLatitudePoint3(6.0);
-    zone1.setLongitudePoint3(7.0);
-    zone1.setLatitudePoint4(8.0);
-    zone1.setLongitudePoint4(9.0);
-
-    when(zoneDAO.findAllZones()).thenReturn(Arrays.asList(zone1));
-
-    Zone result = bikeService.findZoneForBike(bike);
-
-    assertNotNull(result);
-    assertEquals(1, result.getId());
-    }**/
 }
