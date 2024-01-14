@@ -56,5 +56,22 @@ public class ManagerResource {
 		}
 	}
 
+	@Path("bike/{bikeId}")
+	@Produces(MediaType.APPLICATION_JSON)
+	@GET
+	public Response getBikeById(@PathParam("bikeId") int bikeId) {
+		try {
+			Bike bike = bikeDAO.findById(bikeId);
+			if (bike != null) {
+				return Response.ok(bike).build();
+			} else {
+				return Response.status(Response.Status.NOT_FOUND).entity("Vélo non trouvé pour cet ID").build();
+			}
+		} catch (Exception e) {
+			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Erreur lors de la recherche du vélo : " + e.getMessage()).build();
+		}
+	}
+
+
 
 }

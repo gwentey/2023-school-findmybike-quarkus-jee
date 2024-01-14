@@ -1,7 +1,9 @@
 package fr.pantheonsorbonne.ufr27.miage.dao;
 
 import fr.pantheonsorbonne.ufr27.miage.exception.NoBikeFound;
+import fr.pantheonsorbonne.ufr27.miage.exception.NoZoneFound;
 import fr.pantheonsorbonne.ufr27.miage.model.Bike;
+import fr.pantheonsorbonne.ufr27.miage.model.Zone;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityNotFoundException;
@@ -62,17 +64,42 @@ public class BikeDAOImpl implements BikeDAO {
 
     @Override
     @Transactional
-    public Bike createBike(Bike bike) {
+    public Bike createBike(Bike b) {
+        Zone zone = em.find(Zone.class, b.getZone().getId());
+
+        Bike bike = new Bike();
+        bike.setManagerId(b.getManagerId());
+        bike.setPositionX(b.getPositionX());
+        bike.setPositionY(b.getPositionY());
+        bike.setBatterie(b.getBatterie());
+        bike.setBooked(false);
+        bike.setInCharge(false);
+        if(zone != null){
+            bike.setZone(zone);
+        } else {
+            throw new NoZoneFound.NoZoneFoundById(b.getZone().getId());
+        }
+
         return save(bike);
     }
 
+    @Override
+    @Transactional
     public Bike updateBike(int bikeId, Bike bikeDetails) {
+        Zone zone = em.find(Zone.class, bikeDetails.getZone().getId());
         Bike bike = em.find(Bike.class, bikeId);
         if (bike != null) {
             bike.setPositionX(bikeDetails.getPositionX());
             bike.setPositionY(bikeDetails.getPositionY());
             bike.setBatterie(bikeDetails.getBatterie());
             bike.setManagerId(bikeDetails.getManagerId());
+
+            if(zone != null){
+                bike.setZone(zone);
+            } else {
+                throw new NoZoneFound.NoZoneFoundById(bikeDetails.getZone().getId());
+            }
+
             return em.merge(bike);
         } else {
             throw new NoBikeFound.NoBikeFoundByID(bikeId);
