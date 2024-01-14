@@ -139,32 +139,34 @@ public class CamelRoutes extends RouteBuilder {
                 });
 
     }
-    private static class BikeActionProcessor implements Processor {
-        private BikeGateway bikeHandler;
 
-        public BikeActionProcessor(BikeGateway bikeHandler) {
-            this.bikeHandler = bikeHandler;
-        }
+        private static class BikeActionProcessor implements Processor {
+            private BikeGateway bikeHandler;
 
-        @Override
-        public void process(Exchange exchange) {
-            Bike bike = exchange.getIn().getBody(Bike.class);
-            String action = exchange.getIn().getHeader("BikeAction", String.class);
+            public BikeActionProcessor(BikeGateway bikeHandler) {
+                this.bikeHandler = bikeHandler;
+            }
 
-            switch (action) {
-                case "return":
-                    bikeHandler.dropABike(bike);
-                    break;
-                case "recharge-valid":
-                    bikeHandler.setInCharge(bike);
-                    break;
-                case "recharge-end":
-                    bikeHandler.isCharged(bike);
-                    break;
-                default:
-                    throw new IllegalArgumentException("Action non reconnue : " + action);
+            @Override
+            public void process(Exchange exchange) throws Exception {
+                Bike bike = exchange.getIn().getBody(Bike.class);
+                String action = exchange.getIn().getHeader("BikeAction", String.class);
+
+                switch (action) {
+                    case "return":
+                        bikeHandler.dropABike(bike);
+                        break;
+                    case "recharge-valid":
+                        bikeHandler.setInCharge(bike);
+                        break;
+                    case "recharge-end":
+                        bikeHandler.isCharged(bike);
+                        break;
+                    default:
+                        throw new IllegalArgumentException("Action non reconnue : " + action);
+                }
             }
         }
-    }
+
 }
 
