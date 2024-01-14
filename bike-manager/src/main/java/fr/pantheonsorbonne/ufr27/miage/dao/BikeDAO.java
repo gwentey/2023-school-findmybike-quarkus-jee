@@ -10,5 +10,8 @@ public interface BikeDAO {
     Bike save(Bike bike);
     Bike merge(Bike bike);
     List<Bike> findAllAvailable();
+    Bike createBike(Bike bike);
+    void deleteBike(int bikeId);
+    Bike updateBike(int bikeId, Bike bikeDetails);
 
-    }
+}

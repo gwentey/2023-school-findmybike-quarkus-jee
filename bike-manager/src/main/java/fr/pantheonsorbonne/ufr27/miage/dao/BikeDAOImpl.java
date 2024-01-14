@@ -1,8 +1,10 @@
 package fr.pantheonsorbonne.ufr27.miage.dao;
 
+import fr.pantheonsorbonne.ufr27.miage.exception.NoBikeFound;
 import fr.pantheonsorbonne.ufr27.miage.model.Bike;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
 
@@ -45,4 +47,36 @@ public class BikeDAOImpl implements BikeDAO {
     public Bike merge(Bike bike) {
         return em.merge(bike);
     }
+
+
+    @Override
+    @Transactional
+    public void deleteBike(int bikeId) {
+        Bike bike = em.find(Bike.class, bikeId);
+        if (bike != null) {
+            em.remove(bike);
+        } else {
+            throw new NoBikeFound.NoBikeFoundByID(bikeId);
+        }
+    }
+
+    @Override
+    @Transactional
+    public Bike createBike(Bike bike) {
+        return save(bike);
+    }
+
+    public Bike updateBike(int bikeId, Bike bikeDetails) {
+        Bike bike = em.find(Bike.class, bikeId);
+        if (bike != null) {
+            bike.setPositionX(bikeDetails.getPositionX());
+            bike.setPositionY(bikeDetails.getPositionY());
+            bike.setBatterie(bikeDetails.getBatterie());
+            bike.setManagerId(bikeDetails.getManagerId());
+            return em.merge(bike);
+        } else {
+            throw new NoBikeFound.NoBikeFoundByID(bikeId);
+        }
+    }
 }
+
