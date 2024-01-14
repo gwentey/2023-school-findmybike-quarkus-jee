@@ -74,7 +74,7 @@ public class UserServiceImpl implements UserService {
 		// Vérification si l'utilisateur a une réservation pour ce vélo
 		Booking booking = bookingDAO.findBookingByUserIdAndBikeId(userId, returnedBike.getIdBike());
 		if (booking == null) {
-			throw new NoBookingException.NoBookingUserIDBikeID((int)userId,returnedBike.getIdBike());
+			throw new NoBookingException.NoBookingUserIDBikeID();
 		} else {
 			bookingDAO.deleteBookingByUserIdAndBikeId(userId, returnedBike.getIdBike());
 

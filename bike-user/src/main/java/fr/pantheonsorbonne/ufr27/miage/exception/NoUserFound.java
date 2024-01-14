@@ -9,7 +9,7 @@ public class NoUserFound extends Exception {
         private final String message;
 
         public NoUserFoundByUsername(String username) {
-            super("No user found for the following username : " + username);
+            super("Aucun utilisateur trouvé pour le nom d'utilisateur suivant: " + username);
             this.message = super.getMessage();
         }
 
@@ -23,12 +23,8 @@ public class NoUserFound extends Exception {
         private final String message;
 
         public NoUserFoundByID(int userID) {
-            super("No user found for the following ID : " + userID);
+            super("Aucun utilisateur trouvé pour l'ID suivant : " + userID);
             this.message = super.getMessage();
-        }
-
-        public void printMessage(){
-            System.out.println(message);
         }
     }
 }

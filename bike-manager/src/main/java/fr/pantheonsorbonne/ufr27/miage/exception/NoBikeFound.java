@@ -4,8 +4,8 @@ public class NoBikeFound extends Throwable {
     public static class NoBikeFoundByID extends RuntimeException {
 
         public NoBikeFoundByID(int bikeID){
-            super("No bike found for this ID : " + bikeID);
-            printMessage("No bike found for this ID : " + bikeID);
+            super("Aucun vélo trouvé pour cet identifiant :" + bikeID);
+            printMessage("Aucun vélo trouvé pour cet identifiant : " + bikeID);
         }
 
         public void printMessage(String message) {

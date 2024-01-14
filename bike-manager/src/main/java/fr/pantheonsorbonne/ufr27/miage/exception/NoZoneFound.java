@@ -4,8 +4,8 @@ public class NoZoneFound extends Throwable {
 	public static class NoZoneFoundById extends RuntimeException {
 
 		public NoZoneFoundById(long zoneId){
-			super("No zone found for this ID : " + zoneId);
-			printMessage("No zone found for this ID : " + zoneId);
+			super("Aucune zone trouvée pour cet identifiant : " + zoneId);
+			printMessage("Aucune zone trouvée pour cet identifiant : " + zoneId);
 		}
 
 		public void printMessage(String message) {

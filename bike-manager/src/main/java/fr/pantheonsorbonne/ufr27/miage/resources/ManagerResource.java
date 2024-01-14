@@ -9,7 +9,6 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
 @Path("manager")
-@RolesAllowed("user")
 public class ManagerResource {
 	@Inject
 	BikeDAO bikeDAO;

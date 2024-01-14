@@ -115,7 +115,6 @@ public class ChargeurServiceImpl implements ChargeurService {
 			double centerY = (zone.getLatitudePoint1() + zone.getLatitudePoint2() +
 					zone.getLatitudePoint3() + zone.getLatitudePoint4()) / 4;
 
-			// Calculez la distance entre la position du vélo et le centre de la zone
 			double distance = calculateReelDistance(bike.getPositionY(), bike.getPositionX(), centerY, centerX);
 			System.out.println("Distance de la zone: " + distance + " kilomètres avec le vélo");
 

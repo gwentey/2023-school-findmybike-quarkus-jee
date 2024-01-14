@@ -48,20 +48,17 @@ class UserResourcePostImpTest {
 
 	@Test
 	void testBookABikeEndpoint() throws BikeAlreadyBookedException {
-		// Simulez les données de retour pour userDAO et userService
 		User mockUser = new User();
-		mockUser.setId(1L); // Assurez-vous que l'ID correspond à celui utilisé dans le test
-		// Configurez mockUser avec d'autres propriétés si nécessaire
+		mockUser.setId(1L); //
 
 		Booking mockBooking = new Booking();
-		mockBooking.setBike(new Bike()); // Assurez-vous que le vélo est défini dans la réservation
-		mockBooking.setUser(mockUser); // Associez l'utilisateur à la réservation
+		mockBooking.setBike(new Bike());
+		mockBooking.setUser(mockUser);
 
 		when(userDAO.findByUsername("anthony")).thenReturn(mockUser);
 		when(userService.bookABike(anyLong(), anyInt())).thenReturn(mockBooking);
 
-		// Configurez le reste du test
-		int bikeId = 1; // ou un autre identifiant, selon le scénario de test
+		int bikeId = 1;
 		double userPosX = 2.3295;
 		double userPosY = 48.7965;
 
@@ -71,10 +68,8 @@ class UserResourcePostImpTest {
 				.when().post("/user/bike/" + bikeId + "/")
 				.then()
 				.statusCode(200)
-				.body("booking.idBooking", equalTo(mockBooking.getIdBooking())); // Assurez-vous que cela correspond à votre réponse attendue
-		// Autres assertions selon le besoin
+				.body("booking.idBooking", equalTo(mockBooking.getIdBooking()));
 
-		// Vérifiez que les méthodes simulées ont été appelées
 		verify(userDAO).findByUsername("anthony");
 		verify(userService).bookABike(anyLong(), eq(bikeId));
 	}

@@ -6,8 +6,8 @@ public class NoBookingException extends Exception {
 
         private String message;
 
-        public NoBookingUserIDBikeID(int userID, int bikeID) {
-            super("No booking found relative to user n°" + userID + " and Bike n°" + bikeID);
+        public NoBookingUserIDBikeID() {
+            super("Aucune réservation trouvée pour cet utilisateur et ce vélo");
             this.message = super.getMessage();
         }
 

@@ -1,14 +1,7 @@
 package fr.pantheonsorbonne.ufr27.miage.resources;
 
 import fr.pantheonsorbonne.ufr27.miage.camel.BikeGatewayImpl;
-import fr.pantheonsorbonne.ufr27.miage.dao.BikeDAO;
-import fr.pantheonsorbonne.ufr27.miage.dao.BookingDAO;
-import fr.pantheonsorbonne.ufr27.miage.dao.UserDAO;
-import fr.pantheonsorbonne.ufr27.miage.model.Bike;
-import fr.pantheonsorbonne.ufr27.miage.model.Booking;
-import fr.pantheonsorbonne.ufr27.miage.model.User;
-import fr.pantheonsorbonne.ufr27.miage.service.UserService;
-import fr.pantheonsorbonne.ufr27.miage.service.UserServiceImpl;
+import fr.pantheonsorbonne.ufr27.miage.model.Bike;;
 import io.quarkus.test.InjectMock;
 import io.quarkus.test.Mock;
 import io.quarkus.test.junit.QuarkusTest;

@@ -148,7 +148,7 @@ class UserServiceImplTest {
             userService.returnBike(userId, bike);
         });
 
-        assertEquals("Utilisateur introuvable", exception.getMessage());
+        assertEquals("Aucun utilisateur trouvé pour l'ID suivant : 1", exception.getMessage());
     }
 
     @Test

@@ -1,4 +1,4 @@
-package fr.pantheonsorbonne.ufr27.miage;
+package fr.pantheonsorbonne.ufr27.miage.service;
 
 import fr.pantheonsorbonne.ufr27.miage.camel.BikeGatewayImpl;
 import fr.pantheonsorbonne.ufr27.miage.dao.BikeDAOImpl;
@@ -6,7 +6,6 @@ import fr.pantheonsorbonne.ufr27.miage.dao.ZoneDAOImpl;
 import fr.pantheonsorbonne.ufr27.miage.dto.BikeRequest;
 import fr.pantheonsorbonne.ufr27.miage.model.Bike;
 import fr.pantheonsorbonne.ufr27.miage.model.Zone;
-import fr.pantheonsorbonne.ufr27.miage.service.BikeServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
