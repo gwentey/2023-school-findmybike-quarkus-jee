@@ -29,6 +29,7 @@ ObjectStore
 .gradle
 docker/distroless/bazel-*
 /.apt_generated_tests/
+.quarkus/*
 quarkus.log
 replay_*.logß
 nbactions.xml
