@@ -92,7 +92,7 @@ public class UserResource {
 
             userService.returnBike(user.id, bike);
 
-            return Response.ok().build();
+            return Response.ok("Vélo retouré avec succès !").build();
         } catch (RuntimeException e) {
             return Response.status(Response.Status.NOT_FOUND).entity("Échec du retour du vélo: " + e.getMessage()).build();
         } catch (Exception e) {
