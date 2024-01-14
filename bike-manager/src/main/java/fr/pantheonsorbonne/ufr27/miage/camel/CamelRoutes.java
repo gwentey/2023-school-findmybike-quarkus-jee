@@ -85,6 +85,18 @@ public class CamelRoutes extends RouteBuilder {
                 .to("sjms2:M1.bike-book-response")
                 .log("Réponse envoyée pour la réservation du vélo ID: ${header.bikeId} à la queue M1.bike-book-response");
 
+
+        /**
+         * Cette route consomme des messages de la queue 'M1.bike-actions', qui contiennent des informations
+         * sur les vélos et une action a effectuer.
+         */
+        from("sjms2:M1.bike-actions")
+                .autoStartup(isRouteEnabled)
+                .unmarshal().json(Bike.class)
+                .process(new BikeActionProcessor(bikeHandler))
+                .log("Action traitée pour le vélo ID: ${body.idBike}");
+
+
         /**
          * Cette route consomme des messages de la queue 'M1.bike-return', qui contiennent des informations
          * sur les vélos retournés.
@@ -127,6 +139,34 @@ public class CamelRoutes extends RouteBuilder {
                 });
 
     }
+
+        private static class BikeActionProcessor implements Processor {
+            private BikeGateway bikeHandler;
+
+            public BikeActionProcessor(BikeGateway bikeHandler) {
+                this.bikeHandler = bikeHandler;
+            }
+
+            @Override
+            public void process(Exchange exchange) throws Exception {
+                Bike bike = exchange.getIn().getBody(Bike.class);
+                String action = exchange.getIn().getHeader("BikeAction", String.class);
+
+                switch (action) {
+                    case "return":
+                        bikeHandler.dropABike(bike);
+                        break;
+                    case "recharge-valid":
+                        bikeHandler.setInCharge(bike);
+                        break;
+                    case "recharge-end":
+                        bikeHandler.isCharged(bike);
+                        break;
+                    default:
+                        throw new IllegalArgumentException("Action non reconnue : " + action);
+                }
+            }
+        }
 
 }
 

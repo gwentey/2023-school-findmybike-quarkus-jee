@@ -2,7 +2,6 @@ package fr.pantheonsorbonne.ufr27.miage.resources;
 
 import fr.pantheonsorbonne.ufr27.miage.dao.UserDAO;
 import fr.pantheonsorbonne.ufr27.miage.exception.BikeAlreadyBookedException;
-import fr.pantheonsorbonne.ufr27.miage.exception.InternalServorException;
 import fr.pantheonsorbonne.ufr27.miage.model.Bike;
 import fr.pantheonsorbonne.ufr27.miage.model.Booking;
 import fr.pantheonsorbonne.ufr27.miage.model.User;
@@ -47,7 +46,7 @@ public class UserResource {
             } else {
                 return Response.status(Response.Status.NOT_FOUND).entity("Aucun vélo disponible").build();
             }
-        } catch (InternalServorException e) {
+        } catch (Exception e) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Erreur interne du serveur").build();
         }
     }
@@ -77,7 +76,7 @@ public class UserResource {
         } catch (Exception e) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Erreur lors de la réservation: " + e.getMessage()).build();
         } catch (BikeAlreadyBookedException e) {
-            throw new RuntimeException(e);
+            return Response.status(Response.Status.NOT_FOUND).entity("Vélo déjà réservé !").build();
         }
     }
 
@@ -92,7 +91,7 @@ public class UserResource {
 
             userService.returnBike(user.id, bike);
 
-            return Response.ok().build();
+            return Response.ok("Vélo retourné avec succès !").build();
         } catch (RuntimeException e) {
             return Response.status(Response.Status.NOT_FOUND).entity("Échec du retour du vélo: " + e.getMessage()).build();
         } catch (Exception e) {

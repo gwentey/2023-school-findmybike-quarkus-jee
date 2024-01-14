@@ -23,7 +23,7 @@ public class ManagerResource {
 			Bike newBike = bikeDAO.createBike(bike);
 			return Response.status(Response.Status.CREATED).entity(newBike).build();
 		} catch (Exception e) {
-			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Erreur lors de la création du vélo: " + e.getMessage()).build();
+			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Erreur lors de la création du vélo ! ").build();
 		}
 	}
 
@@ -40,7 +40,7 @@ public class ManagerResource {
 				return Response.status(Response.Status.NOT_FOUND).entity("Vélo non trouvé pour cet id").build();
 			}
 		} catch (Exception e) {
-			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Erreur lors de la mise à jour du vélo: " + e.getMessage()).build();
+			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Erreur lors de la mise à jour du vélo !").build();
 		}
 	}
 
@@ -52,7 +52,7 @@ public class ManagerResource {
 			bikeDAO.deleteBike(bikeId);
 			return Response.ok().entity("Vélo supprimé avec succès").build();
 		} catch (Exception e) {
-			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Erreur lors de la suppression du vélo: " + e.getMessage()).build();
+			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Erreur lors de la suppression du vélo !").build();
 		}
 	}
 
@@ -68,7 +68,7 @@ public class ManagerResource {
 				return Response.status(Response.Status.NOT_FOUND).entity("Vélo non trouvé pour cet ID").build();
 			}
 		} catch (Exception e) {
-			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Erreur lors de la recherche du vélo : " + e.getMessage()).build();
+			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Erreur lors de la recherche du vélo !").build();
 		}
 	}
 
