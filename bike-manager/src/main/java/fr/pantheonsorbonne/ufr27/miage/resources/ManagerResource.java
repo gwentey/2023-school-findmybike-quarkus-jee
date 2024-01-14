@@ -32,6 +32,16 @@ public class ManagerResource {
 	@PUT
 	public Response updateBike(@PathParam("bikeId") int bikeId, Bike bike) {
 		try {
+			System.out.println("RRBIKEID : " +  bikeId);
+			System.out.println("batterie : " +  bike.getBatterie());
+			System.out.println("positionX : " +  bike.getPositionX());
+			System.out.println("positionY : " +  bike.getPositionY());
+			System.out.println("manager : " +  bike.getManagerId());
+			System.out.println("manager : " +  bike.getInCharge());
+			System.out.println("charge : " +  bike.getInCharge());
+			System.out.println("book : " +  bike.getBooked());
+			System.out.println("zone : " +  bike.getZone());
+
 			Bike updatedBike = bikeDAO.updateBike(bikeId, bike);
 			if (updatedBike != null) {
 				return Response.ok(updatedBike).build();
