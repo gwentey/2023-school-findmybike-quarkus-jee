@@ -75,8 +75,10 @@ public class CamelRoutes extends RouteBuilder {
                 .autoStartup(isRouteEnabled)
                 .process(exchange -> {
                     int idBike = exchange.getIn().getHeader("bikeId", Integer.class);
+                    // Logique de traitement pour réserver le vélo
                     boolean bookingResult = bikeHandler.bookBikeById(idBike);
 
+                    // Préparer et envoyer la réponse
                     String responseText = Boolean.toString(bookingResult);
                     exchange.getIn().setBody(responseText);
                 })
@@ -163,8 +165,6 @@ public class CamelRoutes extends RouteBuilder {
                     throw new IllegalArgumentException("Action non reconnue : " + action);
             }
         }
-
-}
-
+    }
 }
 

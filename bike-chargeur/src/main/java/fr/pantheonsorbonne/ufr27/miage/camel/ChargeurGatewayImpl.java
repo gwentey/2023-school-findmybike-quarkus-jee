@@ -8,14 +8,12 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.jms.ConnectionFactory;
 import jakarta.jms.JMSContext;
-import jakarta.jms.JMSException;
 import jakarta.jms.TextMessage;
 
 import java.io.IOException;
 
 @ApplicationScoped
 public class ChargeurGatewayImpl implements ChargeurGateway {
-
     @Inject
     ConnectionFactory connectionFactory;
     @Inject
@@ -39,13 +37,12 @@ public class ChargeurGatewayImpl implements ChargeurGateway {
 
             String jsonString = objectMapper.writeValueAsString(bike);
             TextMessage message = context.createTextMessage(jsonString);
-            message.setStringProperty("BikeAction", "recharge-valid");
 
-            context.createProducer().send(context.createQueue("M1.bike-actions"), message);
+            context.createProducer().send(context.createQueue("M1.bike-recharge-valid"), message);
 
             System.out.println("La validation a été envoyé pour la recharge ID: " + bike.getIdBike());
 
-        } catch (IOException | JMSException e) {
+        } catch (IOException e) {
             throw new ChargeValidationNotSentException("La validation n'a pas été envoyée pour la recharge ID: " + bike.getIdBike(),e);
         }
     }
@@ -61,13 +58,12 @@ public class ChargeurGatewayImpl implements ChargeurGateway {
 
             String jsonString = objectMapper.writeValueAsString(bike);
             TextMessage message = context.createTextMessage(jsonString);
-            message.setStringProperty("BikeAction", "recharge-end");
 
-            context.createProducer().send(context.createQueue("M1.bike-actions"), message);
+            context.createProducer().send(context.createQueue("M1.bike-recharge-end"), message);
 
             System.out.println("La validation a été envoyé pour la recharge ID: " + bike.getIdBike());
 
-        } catch (IOException | JMSException e) {
+        } catch (IOException e) {
             throw new ChargeValidationNotSentException("La validation n'a pas été envoyée pour la recharge ID: " + bike.getIdBike(),e);
         }
     }

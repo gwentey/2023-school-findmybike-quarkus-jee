@@ -26,7 +26,6 @@ public class CamelRoutes extends RouteBuilder {
 
         camelContext.setTracing(true);
 
-
         from("sjms2:M1.bike-recharge")
                 .autoStartup(isRouteEnabled)
                 .unmarshal().json(Bike.class)

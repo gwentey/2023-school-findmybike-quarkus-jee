@@ -80,7 +80,6 @@ public class ChargeurServiceImpl implements ChargeurService {
             }
 		}
 
-
 		System.out.println("Le chargeur est arrivé à la position du vélo.");
 	}
 
@@ -162,7 +161,7 @@ public class ChargeurServiceImpl implements ChargeurService {
 			double centerY = (zone.getLatitudePoint1() + zone.getLatitudePoint2() +
 					zone.getLatitudePoint3() + zone.getLatitudePoint4()) / 4;
 
-			double distance = calculateDistance(bike.getPositionX(), bike.getPositionY(), centerX, centerY);
+			double distance = calculateReelDistance(centerX, centerY, bike.getPositionX(), bike.getPositionY());
 
 			System.out.println("Bike numero " + bike.getIdBike() + " distance entre zone numero " + zone.getId() + " : " + distance + " km");
 
