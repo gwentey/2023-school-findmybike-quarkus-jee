@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import fr.pantheonsorbonne.ufr27.miage.dto.BikeRequest;
 import fr.pantheonsorbonne.ufr27.miage.model.Bike;
 
+import fr.pantheonsorbonne.ufr27.miage.service.BikeService;
 import org.apache.camel.*;
 import org.apache.camel.builder.RouteBuilder;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
@@ -21,8 +22,7 @@ public class CamelRoutes extends RouteBuilder {
     @Inject
     CamelContext camelContext;
     @Inject
-    BikeGateway bikeHandler;
-
+    BikeService bikeService;
     @Inject
     ObjectMapper objectMapper;
 
@@ -38,7 +38,7 @@ public class CamelRoutes extends RouteBuilder {
         from("sjms2:M1.bike-localisation")
                 .autoStartup(isRouteEnabled)
                 .unmarshal().json(BikeRequest.class)
-                .bean(bikeHandler, "nextBikeAvailableByPosition")
+                .bean(bikeService, "nextBikeAvailableByPosition")
                 .marshal().json()
                 .process(exchange -> {
                     String responseJson = exchange.getIn().getBody(String.class);
@@ -55,7 +55,7 @@ public class CamelRoutes extends RouteBuilder {
                 .autoStartup(isRouteEnabled)
                 .process(exchange -> {
                     int idBike = exchange.getIn().getHeader("idBike", Integer.class);
-                    Bike bike = bikeHandler.getABikeById(idBike);
+                    Bike bike = bikeService.getABikeById(idBike);
                     if (bike != null) {
                         String responseJson = objectMapper.writeValueAsString(bike);
                         exchange.getIn().setBody(responseJson);
@@ -76,7 +76,7 @@ public class CamelRoutes extends RouteBuilder {
                 .process(exchange -> {
                     int idBike = exchange.getIn().getHeader("bikeId", Integer.class);
                     // Logique de traitement pour réserver le vélo
-                    boolean bookingResult = bikeHandler.bookBikeById(idBike);
+                    boolean bookingResult = bikeService.bookBikeById(idBike);
 
                     // Préparer et envoyer la réponse
                     String responseText = Boolean.toString(bookingResult);
@@ -93,7 +93,7 @@ public class CamelRoutes extends RouteBuilder {
         from("sjms2:M1.bike-actions")
                 .autoStartup(isRouteEnabled)
                 .unmarshal().json(Bike.class)
-                .process(new BikeActionProcessor(bikeHandler))
+                .process(new BikeActionProcessor(bikeService))
                 .log("Action traitée pour le vélo ID: ${body.idBike}");
 
 
@@ -106,45 +106,18 @@ public class CamelRoutes extends RouteBuilder {
                 .unmarshal().json(Bike.class)
                 .process(exchange -> {
                     Bike bike = exchange.getIn().getBody(Bike.class);
-                    bikeHandler.dropABike(bike);
+                    bikeService.dropABike(bike);
                     System.out.println("Vélo retourné traité pour le vélo ID: " + bike.getIdBike());
                 })
                 .log("Traitement du vélo retourné pour le vélo ID: ${body.idBike}");
 
-
-        /**
-         * Cette route consomme des messages de la queue 'M1.bike-recharge-valid', qui contiennent des informations
-         * sur le vélo qui va etre rechargé.
-         */
-        from("sjms2:M1.bike-recharge-valid")
-                .autoStartup(isRouteEnabled)
-                .unmarshal().json(Bike.class)
-                .process(exchange -> {
-                    Bike bike = exchange.getIn().getBody(Bike.class);
-                    bikeHandler.setInCharge(bike);
-                    System.out.println("Vélo en cours de charge ID: " + bike.getIdBike());
-                });
-
-        /**
-         * Cette route consomme des messages de la queue 'M1.bike-recharge-end', qui contiennent des informations
-         * sur le vélo qui a été rechargé et replacé
-         */
-        from("sjms2:M1.bike-recharge-end")
-                .autoStartup(isRouteEnabled)
-                .unmarshal().json(Bike.class)
-                .process(exchange -> {
-                    Bike bike = exchange.getIn().getBody(Bike.class);
-                    bikeHandler.isCharged(bike);
-                    System.out.println("Vélo en cours de charge ID: " + bike.getIdBike());
-                });
-
     }
 
         private static class BikeActionProcessor implements Processor {
-            private BikeGateway bikeHandler;
+            private BikeService bikeService;
 
-            public BikeActionProcessor(BikeGateway bikeHandler) {
-                this.bikeHandler = bikeHandler;
+            public BikeActionProcessor(BikeService bikeService) {
+                this.bikeService = bikeService;
             }
 
             @Override
@@ -154,13 +127,13 @@ public class CamelRoutes extends RouteBuilder {
 
                 switch (action) {
                     case "return":
-                        bikeHandler.dropABike(bike);
+                        bikeService.dropABike(bike);
                         break;
                     case "recharge-valid":
-                        bikeHandler.setInCharge(bike);
+                        bikeService.setInCharge(bike);
                         break;
                     case "recharge-end":
-                        bikeHandler.isCharged(bike);
+                        bikeService.isCharged(bike);
                         break;
                     default:
                         throw new IllegalArgumentException("Action non reconnue : " + action);

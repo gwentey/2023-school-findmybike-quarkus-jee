@@ -24,8 +24,6 @@ import java.util.Random;
 public class BikeGatewayImpl implements BikeGateway {
 
     @Inject
-    BikeService bikeService;
-    @Inject
     ConnectionFactory connectionFactory;
 
     @Inject
@@ -52,33 +50,5 @@ public class BikeGatewayImpl implements BikeGateway {
         }
     }
 
-    @Override
-    public Bike nextBikeAvailableByPosition(BikeRequest bikeRequest) {
-        return bikeService.nextBikeAvailableByPosition(bikeRequest);
-    }
 
-    @Override
-    public Bike getABikeById(int idBike) {
-       return bikeService.getABikeById(idBike);
-    }
-
-    @Override
-    public boolean bookBikeById(int bikeId) {
-        return bikeService.bookBikeById(bikeId);
-    }
-
-    @Override
-    public boolean dropABike(Bike bike) {
-        return bikeService.dropABike(bike);
-    }
-
-    @Override
-    public boolean setInCharge(Bike bike) {
-        return bikeService.setInCharge(bike);
-    }
-
-    @Override
-    public boolean isCharged(Bike bike) {
-        return bikeService.isCharged(bike);
-    }
 }

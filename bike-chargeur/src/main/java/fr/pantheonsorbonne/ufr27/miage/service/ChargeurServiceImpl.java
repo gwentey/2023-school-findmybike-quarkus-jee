@@ -109,15 +109,22 @@ public class ChargeurServiceImpl implements ChargeurService {
 
 	private void seDeplacerVersZoneAvecBike(Zone zone, Bike bike) {
 		if (zone != null) {
-			double distance = calculateReelDistance(zone.getLatitudePoint1(), zone.getLongitudePoint1(), bike.getPositionY(), bike.getPositionX());
+			// Calcul du centre de la zone
+			double centerX = (zone.getLongitudePoint1() + zone.getLongitudePoint2() +
+					zone.getLongitudePoint3() + zone.getLongitudePoint4()) / 4;
+			double centerY = (zone.getLatitudePoint1() + zone.getLatitudePoint2() +
+					zone.getLatitudePoint3() + zone.getLatitudePoint4()) / 4;
+
+			// Calculez la distance entre la position du vélo et le centre de la zone
+			double distance = calculateReelDistance(bike.getPositionY(), bike.getPositionX(), centerY, centerX);
 			System.out.println("Distance de la zone: " + distance + " kilomètres avec le vélo");
 
-			final double vitesseChargeur = 0.4; // 0.4 km/s
+			final double vitesseChargeur = 0.4; // Vitesse du chargeur en km/s
 
 			double distanceRestante = distance;
 			while (distanceRestante > 0) {
 				try {
-					Thread.sleep(1000);
+					Thread.sleep(1000); // Pause de 1 seconde
 					distanceRestante -= vitesseChargeur;
 					System.out.println("Déplacement du chargeur vers la zone " + zone.getId() + " ... Distance restante: " + Math.max(distanceRestante, 0) + " km");
 				} catch (InterruptedException e) {
@@ -126,7 +133,8 @@ public class ChargeurServiceImpl implements ChargeurService {
 					} catch (ChargeInterruptedException ex) {
 						ex.printMessage();
 						Thread.currentThread().interrupt();
-						return;                }
+						return;
+					}
 				}
 			}
 
@@ -161,7 +169,7 @@ public class ChargeurServiceImpl implements ChargeurService {
 			double centerY = (zone.getLatitudePoint1() + zone.getLatitudePoint2() +
 					zone.getLatitudePoint3() + zone.getLatitudePoint4()) / 4;
 
-			double distance = calculateReelDistance(centerX, centerY, bike.getPositionX(), bike.getPositionY());
+			double distance = calculateReelDistance(centerY, centerX, bike.getPositionY(), bike.getPositionX());
 
 			System.out.println("Bike numero " + bike.getIdBike() + " distance entre zone numero " + zone.getId() + " : " + distance + " km");
 
