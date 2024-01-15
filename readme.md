@@ -8,11 +8,6 @@ Les **chargeurs** sont responsables de la récupération, de la recharge et de l
 
 Les **gestionnaires de flotte** ajustent la taille de la flotte en ajoutant ou supprimant des vélos dans chacune des zones en fonction des besoins.
 
-## Interfaces
-
-
-## Schéma relationnel
-
 
 ## Exigences fonctionnelles
 
